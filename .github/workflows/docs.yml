@@ -9,6 +9,7 @@ on:
       - mkdocs.yml
       - "docs/**"
       - "**.md"
+  workflow_dispatch:
 
 jobs:
   build:
@@ -39,7 +40,7 @@ jobs:
       - name: (main only) Publish built docs to GH pages
         id: deployment
         if: |
-          (github.event_name == 'push') &&
+          ((github.event_name == 'push') || (github.event_name == 'workflow_dispatch')) &&
           (github.ref == 'ref/heads/main')
         uses: actions/upload-pages-artifact@v4
         with:
