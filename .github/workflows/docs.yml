@@ -41,7 +41,7 @@ jobs:
         id: deployment
         if: |
           ((github.event_name == 'push') || (github.event_name == 'workflow_dispatch')) &&
-          (github.ref == 'ref/heads/main')
+          ((github.ref == 'refs/heads/main') || (github.ref_type == 'tag'))
         uses: actions/upload-pages-artifact@v4
         with:
           # path should be the -d, --site-dir target of the mkdocs build, that is run in
