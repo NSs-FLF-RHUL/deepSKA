@@ -18,6 +18,9 @@
 
 ## About
 
+:warning: This package is currently under construction and in pre-release.
+The API and features may change suddenly without warning.
+
 ### Project Team
 
 Vanessa Graber ([vanessa.graber@rhul.ac.uk](mailto:vanessa.graber@rhul.ac.uk))
