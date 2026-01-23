@@ -9,6 +9,7 @@ on:
       - mkdocs.yml
       - "docs/**"
       - "**.md"
+  workflow_dispatch:
 
 jobs:
   build:
