@@ -8,6 +8,9 @@ def _to_module_string(path: str) -> str:
     return path.replace("/", ".").replace("\\", ".").replace(".py", "")
 
 
+# Allows pytest to discover all fixtures stored in the tests/fixtures
+# directory, for use in the test suite.
+
 pytest_plugins = [
     _to_module_string(fixture.relative_to(_THIS_DIR.parent).as_posix())
     for fixture in Path(f"{_THIS_DIR}/fixtures").rglob("*.py")
