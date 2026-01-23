@@ -40,8 +40,8 @@ jobs:
       - name: (main only) Publish built docs to GH pages
         id: deployment
         if: |
-          ((github.event_name == 'push') && (github.ref == 'ref/heads/main')) ||
-          ((github.event_name == 'workflow_dispatch') && (github.ref == 'ref/heads/main'))
+          ((github.event_name == 'push') || (github.event_name == 'workflow_dispatch')) &&
+          (github.ref == 'ref/heads/main')
         uses: actions/upload-pages-artifact@v4
         with:
           # path should be the -d, --site-dir target of the mkdocs build, that is run in
