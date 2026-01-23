@@ -37,8 +37,7 @@ jobs:
       - name: Build HTML documentation with tox
         run: tox -e docs
 
-      - name: (main only) Publish built docs to GH pages
-        id: deployment
+      - name: Upload build artefact
         if: |
           ((github.event_name == 'push') || (github.event_name == 'workflow_dispatch')) &&
           ((github.ref == 'refs/heads/main') || (github.ref_type == 'tag'))
@@ -47,3 +46,18 @@ jobs:
           # path should be the -d, --site-dir target of the mkdocs build, that is run in
           # tox -e docs
           path: site
+          name: github-pages
+
+  deploy:
+    runs-on: ubuntu-latest
+    name: (main only) Deploy to GH pages
+    if: |
+      ((github.event_name == 'push') || (github.event_name == 'workflow_dispatch')) &&
+      ((github.ref == 'refs/heads/main') || (github.ref_type == 'tag'))
+    steps:
+      - name: Deploy from artefact
+        uses: actions/deploy-pages@v4
+        with:
+          artefact_name: github-pages
+          
+        
