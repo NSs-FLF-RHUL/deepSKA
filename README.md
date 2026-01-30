@@ -7,12 +7,12 @@
 [![License][license-badge]](./LICENSE.md)
 
 <!-- prettier-ignore-start -->
-[tests-badge]:              https://github.com/NNs-FLF-RHUL/deepska/actions/workflows/tests.yml/badge.svg
-[tests-link]:               https://github.com/NNs-FLF-RHUL/deepska/actions/workflows/tests.yml
-[linting-badge]:            https://github.com/NNs-FLF-RHUL/deepska/actions/workflows/linting.yml/badge.svg
-[linting-link]:             https://github.com/NNs-FLF-RHUL/deepska/actions/workflows/linting.yml
-[documentation-badge]:      https://github.com/NNs-FLF-RHUL/deepska/actions/workflows/docs.yml/badge.svg
-[documentation-link]:       https://github.com/NNs-FLF-RHUL/deepska/actions/workflows/docs.yml
+[tests-badge]:              https://github.com/NSs-FLF-RHUL/deepska/actions/workflows/tests.yml/badge.svg
+[tests-link]:               https://github.com/NSs-FLF-RHUL/deepska/actions/workflows/tests.yml
+[linting-badge]:            https://github.com/NSs-FLF-RHUL/deepska/actions/workflows/linting.yml/badge.svg
+[linting-link]:             https://github.com/NSs-FLF-RHUL/deepska/actions/workflows/linting.yml
+[documentation-badge]:      https://github.com/NSs-FLF-RHUL/deepska/actions/workflows/docs.yml/badge.svg
+[documentation-link]:       https://github.com/NSs-FLF-RHUL/deepska/actions/workflows/docs.yml
 [license-badge]:            https://img.shields.io/badge/License-GPLv3-blue.svg
 <!-- prettier-ignore-end -->
 
@@ -46,13 +46,13 @@ development version of `deepska` using `pip` in the currently active
 environment run
 
 ```sh
-pip install git+https://github.com/NNs-FLF-RHUL/deepska.git
+pip install git+https://github.com/NSs-FLF-RHUL/deepska.git
 ```
 
 Alternatively create a local clone of the repository with
 
 ```sh
-git clone https://github.com/NNs-FLF-RHUL/deepska.git
+git clone https://github.com/NSs-FLF-RHUL/deepska.git
 ```
 
 and then install in editable mode by running

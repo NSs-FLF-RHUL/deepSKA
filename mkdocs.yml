@@ -2,8 +2,8 @@ site_name: "deepSKA"
 site_description: "Documentation website for deepSKA"
 site_author: "Vanessa Graber"
 copyright: "Copyright © 2026 Vanessa Graber"
-repo_url: "https://github.com/NNs-FLF-RHUL/deepska/"
-repo_name: "NNs-FLF-RHUL/deepska"
+repo_url: "https://github.com/NSs-FLF-RHUL/deepska/"
+repo_name: "NSs-FLF-RHUL/deepska"
 edit_uri: edit/main/docs/
 
 validation:
@@ -60,4 +60,4 @@ plugins:
 extra:
   social:
     - icon: fontawesome/brands/github
-      link: "https://github.com/NNs-FLF-RHUL"
+      link: "https://github.com/NSs-FLF-RHUL"
