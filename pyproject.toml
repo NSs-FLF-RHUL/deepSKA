@@ -17,7 +17,7 @@ license-files = ["LICENSE.md"]
 name = "deepska"
 readme = "README.md"
 requires-python = ">=3.11"
-urls.homepage = "https://github.com/NNs-FLF-RHUL/deepska"
+urls.homepage = "https://github.com/NSs-FLF-RHUL/deepska"
 
 [project.optional-dependencies]
 dev = ["build", "mypy", "pre-commit", "ruff", "tox", "twine"]
