@@ -4,12 +4,12 @@
 
 The deepSKA development workflow follows [github-flow](https://scottchacon.com/2011/08/31/github-flow):
 
-- The `main` branch is kept clean and is always functional.
+- The `main` branch is kept clean and is always functional.  
   Any code development branches off (with a `git branch`), and eventually merges back into, the `main` branch.
   Core developers have write access, allowing them to open new branches in this repository for their development.
   External contributors should [use forks](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project) instead.
   These instructions assume repo access, but their workflow applies to contributions via forks as well.
-- Any code development you would like to contribute has to relate to a [GitHub issue](https://github.com/NSs-FLF-RHUL/deepSKA/issues).
+- Any code development you would like to contribute has to relate to a [GitHub issue](https://github.com/NSs-FLF-RHUL/deepSKA/issues).  
   If an issue does not exist for the feature or bug-fix you want to work on, please open a new issue, using the appropriate template.
 - Clone this repo locally to work on your code changes.
 - Create a branch off `main`, descriptively named, ideally starting with the issue number, and switch to it:
@@ -34,17 +34,17 @@ Switched to a new branch <name-of-my-branch>
 
 <!-- **Now that you are ready to code, please read the [developers intro](developerIntroduction.md) and [coding standard](codingStandard.md)!** -->
 
-- Commit to that branch locally and regularly, using `git add` and `git commit`.
+- Commit to that branch locally and regularly, using `git add` and `git commit`.  
   Please use [descriptive commit messages](https://chris.beams.io/git-commit).
-- Push your work regularly to the same named branch on the repo via `git push` (you might need the full `git push -u origin name-of-your-branch` the first time you do this).
+- Push your work regularly to the same named branch on the repo via `git push` (you might need the full `git push -u origin name-of-your-branch` the first time you do this).  
   Note that you can continue to add commits to your branch after pushing to GitHub - just run `git push` again to send these new commits to GitHub too.
-- If you need feedback or you think your branch is ready for merging, navigate back to the repository on GitHub and use the pull requests (PR) tab to open a PR, targeting `main`, with the changes from your branch.
+- If you need feedback or you think your branch is ready for merging, navigate back to the repository on GitHub and use the pull requests (PR) tab to open a PR, targeting `main`, with the changes from your branch.  
   In order to connect your PR with the issue it is resolving, include the text `Fixes #<YOUR-ISSUE-NUMBER>` (e.g. `Fixes #15`) in the PR description.
   If you are not quite ready to merge yet but you would like some feedback or help, open a draft pull request instead.
   You can later convert that to a non-draft PR when you are ready.
-- Request a code review from the PR menu on the right.
+- Request a code review from the PR menu on the right.  
   You can request review from individual people, or from a team (e.g. `@NSs-FLF-RHUL/rse-team` will forward your requests to all the RSEs in the project).
-- Once your PR has been [reviewed and approved](#conditions-for-merging-a-pr), and all the automated tests have passed, you can merge it into `main` and delete the branch from GitHub.
+- Once your PR has been [reviewed and approved](#conditions-for-merging-a-pr), and all the automated tests have passed, you can merge it into `main` and delete the branch from GitHub.  
   We use [squash merges](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/incorporating-changes-from-a-pull-request/about-pull-request-merges#squash-and-merge-your-commits), but your individual commits will still be accessible on GitHub in the (now closed) PR.
   At this point, "merge conflicts" may arise if others have merged their PRs into `main` in the meantime, which you will have to [resolve](#resolving-merge-conflicts).
 - After merging, remember to bring your local copy of the repo up to date before creating a new branch for your next development task:
