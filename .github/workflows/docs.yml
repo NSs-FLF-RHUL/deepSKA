@@ -12,7 +12,25 @@ on:
   workflow_dispatch:
 
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      docfiles: ${{ steps.filter.outputs.docfiles }}
+    steps:
+      - uses: dorny/paths-filter@v4
+        id: filter
+        with:
+          filters: |
+            docfiles:
+              - mkdocs.yml
+              - "docs/**"
+              - "**.md"
+
   build:
+    needs: check
+    if: ${{ needs.check.outputs.docfiles == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source
