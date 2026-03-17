@@ -32,6 +32,7 @@ jobs:
   build:
     needs: check
     if: ${{ needs.check.outputs.docfiles == 'true' }}
+    name: Build the docs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source
