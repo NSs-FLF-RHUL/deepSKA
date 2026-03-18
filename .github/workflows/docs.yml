@@ -16,6 +16,14 @@ jobs:
     outputs:
       docfiles: ${{ steps.filter.outputs.docfiles }}
     steps:
+      # https://github.com/dorny/paths-filter?tab=readme-ov-file#supported-workflows
+      # When the triggering event is not a pull request, repository must be checked
+      # out prior to running, so the previous commit can be accessed and changes to
+      # the filter patterns can be detected.
+      - uses: actions/checkout@v6
+        name: (Non-pull request) Checkout repository to get commit history
+        if: ${{ github.event_name != 'pull_request' }}
+
       - uses: dorny/paths-filter@v4
         id: filter
         with:
@@ -82,4 +90,4 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
         with:
-          artefact_name: github-pages
+          artifact_name: github-pages
