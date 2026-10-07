@@ -1,4 +1,4 @@
-## Glitch rise model (`deepska.glitch`)
+# Glitch rise model (`deepska.glitch`)
 
 The pulsar glitch rise model of
 [Graber, Cumming and Andersson 2018, ApJ 865, 23](https://doi.org/10.3847/1538-4357/aad776)
