@@ -1,0 +1,21 @@
+# Copyright (C) 2026 Isaac Dodds, Royal Holloway University of London
+"""A drag profile thats the same at every density."""
+
+import jax.numpy as jnp
+from jax import Array
+
+from deepska.glitch.kinds import Fn, Num
+
+
+def make_b_profile_flat(b_value: Num) -> Fn:
+    """
+    Make a drag profile that is the same at every density.
+
+    :param b_value: The value of B.
+    :returns: Function giving b_value at any mass density.
+    """
+
+    def b_profile_flat(rho: Num) -> Array:
+        return jnp.full_like(rho, b_value)  # same B at every density
+
+    return b_profile_flat
