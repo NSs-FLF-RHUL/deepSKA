@@ -1,1 +1,1 @@
-"to pass pre-commit"
+"""to pass pre-commit."""
