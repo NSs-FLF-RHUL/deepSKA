@@ -6,9 +6,7 @@ import jax.numpy as jnp
 from jax import Array
 
 from deepska.glitch.kinds import Num
-from deepska.glitch.numerics.pad_increasing import pad_increasing
-from deepska.glitch.numerics.pchip_build import pchip_build
-from deepska.glitch.numerics.pchip_eval import pchip_eval
+from deepska.glitch.numerics.pchip import pad_increasing, pchip_build, pchip_eval
 
 
 def m_of_rho(rho: Num, m_hist: Num, rho_hist: Num, n_valid: Num) -> Array:

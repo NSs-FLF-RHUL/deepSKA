@@ -4,7 +4,7 @@
 from jax import Array
 
 from deepska.glitch.kinds import Num
-from deepska.glitch.numerics.pchip_integral import pchip_integral
+from deepska.glitch.numerics.pchip import pchip_integral
 
 
 def cylinder_inertia(di_cylinder: Num, a: Num, b: Num, h: Num) -> Array:

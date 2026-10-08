@@ -5,7 +5,7 @@ import jax.numpy as jnp
 from jax import Array
 
 from deepska.glitch.kinds import Num
-from deepska.glitch.numerics.pchip_build import pchip_build
+from deepska.glitch.numerics.pchip import pchip_build
 
 
 def cylinder_inertia_spline(r_hist: Num, rho_hist: Num, n_valid: Num) -> Array:

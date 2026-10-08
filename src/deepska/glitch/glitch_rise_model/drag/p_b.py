@@ -11,7 +11,7 @@ import jax
 
 from deepska.glitch.data.b_data import tables
 from deepska.glitch.glitch_rise_model.drag.b_knots import b_knots
-from deepska.glitch.numerics.loglog_pchip_build import loglog_pchip_build
+from deepska.glitch.numerics.pchip import loglog_pchip_build
 
 b_all, delta_v_all, f_all = b_knots(tables)  # knot values for all 3 cases
 # one spline per case through them, same densities for all 3
