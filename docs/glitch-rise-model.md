@@ -10,12 +10,14 @@ It:
 
 Everything is `float64` and can be `vmap`-ed, so sweeps over the inputs are quick.
 
-Three scripts, each with its settings at the top of the file:
+Three scripts are provided in the `scripts/` folder at the top level of the repository.
+These scripts can be executed in an environment with the `deepska` package installed.
+Each script has settings that can be configured at the top of the file:
 
 ```sh
-python -m deepska.glitch.scripts.paper        # Table 2 and the 13 figures of the paper
-python -m deepska.glitch.scripts.sweep        # sweep any inputs and compare with the Vela data
-python -m deepska.glitch.scripts.sensitivity  # how much each output moves with each input
+python -m scripts/paper.py        # Table 2 and the 13 figures of the paper
+python -m scripts/sweep.py        # sweep any inputs and compare with the Vela data
+python -m scripts/sensitivity.py  # how much each output moves with each input
 ```
 
 There is one function per file, so a change to one piece stays in that file.
