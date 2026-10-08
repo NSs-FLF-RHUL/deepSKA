@@ -31,3 +31,7 @@ The sensitivity script uses a 1% nudge each way for those inputs and autodiff fo
 
 The Vela 2016 glitch timing residuals in `deepska/glitch/data/palfreyman2018_vela_glitch_residuals.csv` is the supplementary data file of [Palfreyman et al. 2018, Nature 556, 219](https://doi.org/10.1038/s41586-018-0001-x) (`41586_2018_1_MOESM1_ESM.csv`, the same file that is in [vanessagraber/glitchrises](https://github.com/vanessagraber/glitchrises)).
 It is only used to compare the model with the data.
+
+## Credit & Copyright
+
+The `jax` implementation of the Glitch Rise Model was implemented in 2026 Isaac Dodds, Royal Holloway University of London.
