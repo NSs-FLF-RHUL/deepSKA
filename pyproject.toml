@@ -71,6 +71,7 @@ lint.select = ["ALL"]
 lint.isort.known-first-party = ["deepska"]
 lint.mccabe.max-complexity = 18
 lint.pep8-naming.classmethod-decorators = ["classmethod"]
+namespace-packages = ["scripts/"]
 
 [tool.tox]
 env_list = ["py311"]
