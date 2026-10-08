@@ -194,3 +194,12 @@ class Batching(NamedTuple):
 
     batch: int  # runs side by side in one batch
     cores: int  # batches going at once
+
+
+class Store(NamedTuple):
+    """What the ode solver stores: a piece every step, the whole state at a few."""
+
+    keep: Fn | None = None  # what to store every step, None for the whole state
+    snapshot_steps: list[int] | None = (
+        None  # the steps to keep the whole state at, None for no snapshots
+    )

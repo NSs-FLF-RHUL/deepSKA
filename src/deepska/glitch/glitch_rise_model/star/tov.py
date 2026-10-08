@@ -38,7 +38,7 @@ def tov(
     def rhs(x: Num, r: Num) -> Array:
         return tov_rhs(x, r, inverse, p_min)
 
-    r_hist, x_hist, r_star, x_end, n_valid = solve_ode(
+    r_hist, x_hist, r_star, x_end, n_valid, _ = solve_ode(
         rhs,
         jnp.array([inputs.m0, p0]),
         Steps(inputs.r0, inputs.dr, inputs.n_tov),
