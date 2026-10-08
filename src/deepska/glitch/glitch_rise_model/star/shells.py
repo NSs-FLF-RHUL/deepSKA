@@ -5,7 +5,7 @@ import jax
 import jax.numpy as jnp
 from jax import Array
 
-from deepska.glitch.glitch_rise_model.star.cylinder_inertia import cylinder_inertia
+from deepska.glitch.glitch_rise_model.star.inertia import cylinder_inertia
 from deepska.glitch.kinds import Num, Splines
 from deepska.glitch.numerics.midpoint_edges import midpoint_edges
 from deepska.glitch.numerics.pchip import pchip_eval
