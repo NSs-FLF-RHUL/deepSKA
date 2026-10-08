@@ -5,7 +5,7 @@ from jax import Array
 
 from deepska.glitch.kinds import Num
 from deepska.glitch.numerics.invert import invert
-from deepska.glitch.numerics.pchip_eval import pchip_eval
+from deepska.glitch.numerics.pchip import pchip_eval
 
 
 def drip_radius(rho_r: Num, rho_d: Num, r0: Num, r_star: Num) -> Array:

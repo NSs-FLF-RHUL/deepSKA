@@ -4,7 +4,7 @@
 from jax import Array
 
 from deepska.glitch.kinds import Num
-from deepska.glitch.numerics.loglog_pchip_eval import loglog_pchip_eval
+from deepska.glitch.numerics.pchip import loglog_pchip_eval
 
 
 def b_eval(p_b: tuple[Array, ...], k: Num, rho: Num) -> Array:

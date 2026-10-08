@@ -16,7 +16,7 @@ from deepska.glitch.glitch_rise_model.star.cylinder_inertia import cylinder_iner
 from deepska.glitch.glitch_rise_model.star.rest_inertia import rest_inertia
 from deepska.glitch.glitch_rise_model.star.star_inertia import star_inertia
 from deepska.glitch.kinds import Num, Splines
-from deepska.glitch.numerics.pchip_integral import pchip_integral
+from deepska.glitch.numerics.pchip import pchip_integral
 
 
 def inertia(
