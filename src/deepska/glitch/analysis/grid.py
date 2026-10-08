@@ -14,7 +14,6 @@ from deepska.glitch.glitch_rise_model.run.records_of import records_of
 from deepska.glitch.kinds import Inputs, Outputs, Vela
 
 
-
 def grid_variants(inputs: Inputs, factors: list[float]) -> list[tuple[str, Inputs]]:
     """
     Make the numerical grids finer or coarser, one at a time.
