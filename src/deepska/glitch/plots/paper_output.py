@@ -17,9 +17,7 @@ from deepska.glitch.analysis.timing_residual import timing_residual
 from deepska.glitch.data.paper_inputs import k_a, k_c, steps_a, steps_c
 from deepska.glitch.data.paper_labels import domains
 from deepska.glitch.kinds import Axes, PaperArrays, Spin, Vela
-from deepska.glitch.plots.curves_cases import curves_cases
-from deepska.glitch.plots.curves_profile import curves_profile
-from deepska.glitch.plots.curves_seven import curves_seven
+from deepska.glitch.plots.curves import curves_cases, curves_profile, curves_seven
 from deepska.glitch.plots.figure import figure
 from deepska.glitch.plots.table import table
 from deepska.glitch.plots.vela_curves import vela_curves
