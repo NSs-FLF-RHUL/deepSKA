@@ -2,6 +2,6 @@
 
 {! include-markdown "../README.md" rewrite-relative-urls=false !}
 
-use the following links for information about:
+Use the following links to find information about:
 
-- [the glitch rise model](./glitch_script_explanation.md)
+- [The glitch rise model](./glitch-script-explanation.md)
