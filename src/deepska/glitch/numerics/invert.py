@@ -1,13 +1,15 @@
 # Copyright (C) 2026 Isaac Dodds, Royal Holloway University of London
 """
-Bisection with a fixed number of steps, so it can be vmapped.
+Vmappable inverse of a function that only goes one way, by bisection.
 
-One step of bisection.
-
-Inverse of a function that only goes one way, by bisection.
+- One step of bisection.
+- Full bisection with a fixed number of steps, so it can be vmapped.
+- Invert a function by bisection, with a linear finish so the result is smooth in
+target and gradients aren't 0.
 """
 
-from jax import Array, jnp, lax
+import jax.numpy as jnp
+from jax import Array, lax
 
 from deepska.glitch.kinds import Fn, Num
 from deepska.glitch.numerics.linear_root import linear_root

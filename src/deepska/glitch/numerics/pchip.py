@@ -4,20 +4,14 @@ Pchip spline, used as it keeps the shape of the data.
 
 No overshoot between knots like a normal cubic spline.
 
-pchip_gap: The gaps between pchip knots.
-pchip_interior: Slope at the pchip knots that arent on an edge.
-pchip_edge: Slope at the two end knots of a pchip. End knots only have a neighbour on
-one side so the interior formula doesnt work.
-pchip_build: The spline params from the points.
-pad_increasing: Fixing up padding rows so pchip can take them.
-pchip_interval: Which interval between knots a point falls in.
-pchip_eval: The spline itself, from the params pchip_build gives.
-pchip_area: Integral of one whole pchip interval.
-pchip_part: Integral of part of a pchip interval.
-pchip_integral: Integral of a pchip between any two points. Exact as its just cubics.
-loglog_pchip_build: Pchip in log x and log y.
-loglog_pchip_eval: Reading a log-log pchip back off.
+- Build the spline params from points, with the gaps and the knot slopes it needs.
+- Read the spline back off at a point.
+- Integrate it between any two points, exact as its just cubics.
+- The same in log x and log y.
+- Fix up padding rows so pchip can take them.
 
+End knots only have a neighbour on one side so the interior formula doesnt work, so
+they get their own slope.
 """
 
 import jax
