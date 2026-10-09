@@ -1,8 +1,11 @@
 # Copyright (C) 2026 Isaac Dodds, Royal Holloway University of London
 """
-One rk4 step.
+Runge-Kutta 4th-order ODE solver, implemented in JAX (lax).
 
-Many rk4 steps in a row, run by lax.scan.
+Contains solver function and supporting functions for executing:
+
+- One rk4 step.
+- Many rk4 steps in a row, run via `lax.scan`.
 
 lax.scan is the compiled for loop. The number of steps is fixed when it compiles so n
 has to be a plain int, and the state has to keep the same shape and dtype every step. So
