@@ -7,7 +7,7 @@ swept input (up to three).
 """
 
 from deepska.glitch.kinds import Axes, Drawn, Grid, Num, Vela
-from deepska.glitch.plots.curves_coloured import curves_coloured
+from deepska.glitch.plots.curves import curves_coloured
 from deepska.glitch.plots.figure import figure
 from deepska.glitch.plots.sweep_colours import sweep_colours
 from deepska.glitch.plots.vela_curves import vela_curves
