@@ -164,3 +164,6 @@ _version.py
 
 # IDE settings folders
 **.vscode
+
+# ignore sweep output from simulations
+sweeps/
