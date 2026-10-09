@@ -1,6 +1,12 @@
 # Copyright (C) 2026 Isaac Dodds, Royal Holloway University of London
-"""A drag profile from one of the pinning cases."""
+"""
+The drag profiles B(rho) the model can be run with.
 
+- make_b_profile: the profile of one pinning case.
+- make_b_profile_flat: a profile that is the same at every density.
+"""
+
+import jax.numpy as jnp
 from jax import Array
 
 from deepska.glitch.glitch_rise_model.drag.b_eval import b_eval
@@ -20,3 +26,17 @@ def make_b_profile(k: Num) -> Fn:
         return b_eval(p_b, k, rho)
 
     return b_profile
+
+
+def make_b_profile_flat(b_value: Num) -> Fn:
+    """
+    Make a drag profile that is the same at every density.
+
+    :param b_value: The value of B.
+    :returns: Function giving b_value at any mass density.
+    """
+
+    def b_profile_flat(rho: Num) -> Array:
+        return jnp.full_like(rho, b_value)  # same B at every density
+
+    return b_profile_flat
