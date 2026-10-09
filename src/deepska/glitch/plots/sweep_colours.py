@@ -19,9 +19,6 @@ from matplotlib.colors import ListedColormap, LogNorm, Normalize
 
 from deepska.glitch.kinds import Bar, Colour, Grid, Num
 
-LOG_ABOVE = 30  # an input spanning more than this factor gets a log colour scale
-MAX_TICKS = 6  # up to this many values, a tick at each one
-
 
 def colour(u1: float, u2: float = 0.5, u3: float = 1.0) -> Colour:
     """
@@ -72,7 +69,9 @@ def channel_scale(channel: int, low: Num, high: Num, *, log: bool) -> tuple[Any,
     return ListedColormap(ramp), (LogNorm(low, high) if log else Normalize(low, high))
 
 
-def sweep_colours(shown: Grid, values: Grid) -> tuple[list[Colour], list[Bar]]:
+def sweep_colours(
+    shown: Grid, values: Grid, log_above: float = 30, max_ticks: int = 6
+) -> tuple[list[Colour], list[Bar]]:
     """
     Make a colour for each drawn run and a colour bar for each swept input.
 
@@ -80,6 +79,8 @@ def sweep_colours(shown: Grid, values: Grid) -> tuple[list[Colour], list[Bar]]:
 
     :param shown: The inputs of the drawn runs.
     :param values: The swept values of every input.
+    :param log_above: An input spanning more than this factor gets a log colour scale.
+    :param max_ticks: Up to this many values, a tick at each one.
     :returns colours: The colour of each drawn run.
     :returns bars: One colour bar per swept input.
     """
@@ -87,7 +88,7 @@ def sweep_colours(shown: Grid, values: Grid) -> tuple[list[Colour], list[Bar]]:
     names = list(values)[:3]
     # log for inputs spanning decades
     logs = {
-        n: bool(values[n].min() > 0 and values[n].max() / values[n].min() > LOG_ABOVE)
+        n: bool(values[n].min() > 0 and values[n].max() / values[n].min() > log_above)
         for n in names
     }
     us = [unit(shown[n], values[n].min(), values[n].max(), log=logs[n]) for n in names]
@@ -98,6 +99,6 @@ def sweep_colours(shown: Grid, values: Grid) -> tuple[list[Colour], list[Bar]]:
             c, float(values[n].min()), float(values[n].max()), log=logs[n]
         )
         # few values: tick each one
-        ticks = list(values[n]) if len(values[n]) <= MAX_TICKS else None
+        ticks = list(values[n]) if len(values[n]) <= max_ticks else None
         bars.append((cmap, norm, n, ticks, None if logs[n] else "%.3g"))
     return colours, bars

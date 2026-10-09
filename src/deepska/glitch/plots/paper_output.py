@@ -24,11 +24,6 @@ from deepska.glitch.plots.vela_curves import vela_curves
 
 log = logging.getLogger(__name__)
 
-B_LABEL = "mutual friction coefficient B"
-PROFILE_LABELS = ("r (km)", "Omega_sf (rad/s)")
-DV_UNIT, F_UNIT = 1e4, 1e15  # table 2 prints dv in 1e4 cm/s and f in 1e15 dyn/cm
-WEAK, STRONG = 0, 1  # the 2 core couplings, first axis of the grid
-
 
 def paper_output(arrays: PaperArrays, spin: Spin, vela: Vela) -> None:
     """
@@ -39,6 +34,10 @@ def paper_output(arrays: PaperArrays, spin: Spin, vela: Vela) -> None:
     :param vela: The Vela data.
     """
     a = arrays
+    b_label = "mutual friction coefficient B"
+    profile_labels = ("r (km)", "Omega_sf (rad/s)")
+    dv_unit, f_unit = 1e4, 1e15  # table 2 prints dv in 1e4 cm/s and f in 1e15 dyn/cm
+    weak, strong = 0, 1  # the 2 core couplings, first axis of the grid
     t_hist = spin.dt * np.arange(1, spin.n_t + 1)  # time of every step
     # phase = running sum of the frequency change
     phi_all = phase_of_rise(a.dnu_all, spin.dt)
@@ -51,7 +50,7 @@ def paper_output(arrays: PaperArrays, spin: Spin, vela: Vela) -> None:
 
     vela_pulses, vela_bins, vela_cum, vela_from0 = vela_curves(vela)
     cum_models = [
-        cumulative_residual(res_all[WEAK, k], t_hist, vela.t_bins, vela.dt_shift)
+        cumulative_residual(res_all[weak, k], t_hist, vela.t_bins, vela.dt_shift)
         for k in range(res_all.shape[1])
     ]
     sweep = [
@@ -64,8 +63,8 @@ def paper_output(arrays: PaperArrays, spin: Spin, vela: Vela) -> None:
     rows = [
         (
             domains[j],
-            *(float(a.delta_v_all[k, j] / DV_UNIT) for k in range(3)),
-            *(float(a.f_all[k, j] / F_UNIT) for k in range(3)),
+            *(float(a.delta_v_all[k, j] / dv_unit) for k in range(3)),
+            *(float(a.f_all[k, j] / f_unit) for k in range(3)),
         )
         for j in range(len(domains))
     ]
@@ -81,7 +80,7 @@ def paper_output(arrays: PaperArrays, spin: Spin, vela: Vela) -> None:
         curves = curves_profile(
             a.r_km, a.profiles[core, k], spin.profile_steps, spin.dt, steps
         )
-        figure(curves, Axes(r_lim, free, *PROFILE_LABELS, title, offset=False))
+        figure(curves, Axes(r_lim, free, *profile_labels, title, offset=False))
 
     figure(
         curves_cases(a.rho_b, a.b_curves, a.rho_b_data, a.b_all),
@@ -89,7 +88,7 @@ def paper_output(arrays: PaperArrays, spin: Spin, vela: Vela) -> None:
             (4e11, 1.35e14),
             (1e-5, 1e-1),
             "rho (g/cm^3)",
-            B_LABEL,
+            b_label,
             "1. B against density",
             xlog=True,
             ylog=True,
@@ -101,15 +100,15 @@ def paper_output(arrays: PaperArrays, spin: Spin, vela: Vela) -> None:
             (0.0, 0.0095),
             (1e-5, 1e-1),
             "dM / M",
-            B_LABEL,
+            b_label,
             "2. B against mass fraction",
             ylog=True,
         ),
     )
-    profile(WEAK, k_a, steps_a, "3. superfluid profile, case A, weak core")
-    profile(WEAK, k_c, steps_c, "4. superfluid profile, case C, weak core")
+    profile(weak, k_a, steps_a, "3. superfluid profile, case A, weak core")
+    profile(weak, k_c, steps_c, "4. superfluid profile, case C, weak core")
     figure(
-        curves_seven(t_hist, a.dnu_all[WEAK]),
+        curves_seven(t_hist, a.dnu_all[weak]),
         Axes(
             (-2, 60),
             (1, 5e2),
@@ -120,13 +119,13 @@ def paper_output(arrays: PaperArrays, spin: Spin, vela: Vela) -> None:
         ),
     )
     figure(
-        curves_seven(t_hist, phi_all[WEAK]),
+        curves_seven(t_hist, phi_all[weak]),
         Axes((-1, 60), (-0.0001, 0.0036), "t (s)", "phase", "6. phase, weak core"),
     )
-    profile(STRONG, k_a, steps_a, "7. superfluid profile, case A, strong core")
-    profile(STRONG, k_c, steps_c, "8. superfluid profile, case C, strong core")
+    profile(strong, k_a, steps_a, "7. superfluid profile, case A, strong core")
+    profile(strong, k_c, steps_c, "8. superfluid profile, case C, strong core")
     figure(
-        curves_seven(t_hist, a.dnu_all[STRONG]),
+        curves_seven(t_hist, a.dnu_all[strong]),
         Axes(
             (-0.2, 6),
             (1e-1, 1.2e2),
@@ -137,11 +136,11 @@ def paper_output(arrays: PaperArrays, spin: Spin, vela: Vela) -> None:
         ),
     )
     figure(
-        curves_seven(t_hist, phi_all[STRONG]),
+        curves_seven(t_hist, phi_all[strong]),
         Axes((-1, 60), (-0.00005, 0.00105), "t (s)", "phase", "10. phase, strong core"),
     )
     figure(
-        [vela_pulses, vela_bins, *curves_seven(t_hist, res_all[WEAK])],
+        [vela_pulses, vela_bins, *curves_seven(t_hist, res_all[weak])],
         Axes(
             (-60, 120),
             (-0.4, 0.4),

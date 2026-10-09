@@ -2,6 +2,16 @@
 """
 The drag coefficient B at the knots of the pinning tables.
 
+Graber, Cumming & Andersson 2018 (ApJ 865, 23) work out the drag in the crust three
+ways, which they call cases A, B and C. The cases differ in the pinning energy and the
+length scale they use:
+
+- Case A: the two Epstein-Baym energies combined, with the nuclear radius r_n.
+- Case B: the tabulated pinning energy, with the nuclear radius r_n.
+- Case C: the tabulated pinning energy, with the coherence length xi.
+
+Contents:
+
 - e_pa_of_eb: the case A pinning energy.
 - b_drag_ratio: R, the drag to lift ratio.
 - b_delta_v: the velocity difference a vortex needs to unpin.
@@ -22,6 +32,8 @@ from deepska.glitch.kinds import Case, Knot, Num, PinningTables
 def e_pa_of_eb(e_s: Num, e_l: Num) -> Array:
     """
     Calculate the case A pinning energy from the two Epstein-Baym energies.
+
+    Case A is the first of the three drag cases of Graber, Cumming & Andersson 2018.
 
     :param e_s: The energy E_s of the pinning tables in erg.
     :param e_l: The energy E_l of the pinning tables in erg.

@@ -41,7 +41,7 @@ def cylinder_inertia(di_cylinder: Num, a: Num, b: Num, h: Num) -> Array:
 
 def cylinder_half_height(i_crust_total: Num, i_cyl_unit: Num) -> Array:
     """
-    Calculate the half-height of the cylinder the crust is modelled as.
+    Calculate the half-height of the cylinder the crust is modeled as.
 
     The cylinder (total height 2h) has the same moment of inertia as the spherical
     crust.
