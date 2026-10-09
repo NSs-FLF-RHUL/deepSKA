@@ -1,5 +1,7 @@
 # Copyright (C) 2026 Isaac Dodds, Royal Holloway University of London
 """
+Crust equations consistent with Negele & Vautherin 1973.
+
 The whole crust: electron gas below neutron drip, Negele & Vautherin above it.
 
 - Outer crust: relativistic degenerate electron gas.
