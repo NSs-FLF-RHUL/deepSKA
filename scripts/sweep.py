@@ -31,8 +31,7 @@ from deepska.glitch.analysis.closest_run import closest_run
 from deepska.glitch.analysis.drawn_runs import drawn_runs
 from deepska.glitch.analysis.make_run_residual import make_run_residual
 from deepska.glitch.analysis.make_run_summary import make_run_summary
-from deepska.glitch.analysis.run_sweep import run_sweep
-from deepska.glitch.analysis.save_sweep import save_sweep
+from deepska.glitch.analysis.sweep import run_sweep, save_sweep
 from deepska.glitch.data.paper_inputs import (
     PROFILE_STEPS,
     dom_crit,
