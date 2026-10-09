@@ -1,5 +1,17 @@
 # Copyright (C) 2026 Isaac Dodds, Royal Holloway University of London
 """
+Runge-Kutta 4th-order ODE solver, implemented in JAX (lax).
+
+Contains solver function and supporting functions for executing:
+
+- One rk4 step.
+- Many rk4 steps in a row, run via `lax.scan`.
+
+lax.scan is the compiled for loop. The number of steps is fixed when it compiles so n
+has to be a plain int, and the state has to keep the same shape and dtype every step. So
+to stop early (eg at the surface) all n steps get run anyway and solve_ode works out
+which rows are real.
+
 Rk4 solver for any dx/dt = rhs(x, t) on a fixed grid.
 
 Used for the tov star (stops at the surface where p hits p_min) and the spin equations
@@ -10,11 +22,48 @@ instead of everything always.
 """
 
 import jax.numpy as jnp
-from jax import Array
+from jax import Array, lax
 
 from deepska.glitch.kinds import Fn, Num, Steps, Store
 from deepska.glitch.numerics.linear_root import linear_root
-from deepska.glitch.numerics.rk4_steps import rk4_steps
+
+
+def rk4_step(x: Num, r: Num, dr: Num, f: Fn) -> Array:
+    """
+    Take one rk4 step.
+
+    :param x: The state at r.
+    :param r: Where the step starts.
+    :param dr: Size of the step.
+    :param f: Function giving dx/dr from (x, r).
+    :returns: The state at r + dr.
+    """
+    k1 = dr * f(x, r)
+    k2 = dr * f(x + 0.5 * k1, r + 0.5 * dr)
+    k3 = dr * f(x + 0.5 * k2, r + 0.5 * dr)
+    k4 = dr * f(x + k3, r + dr)
+    return x + (k1 + 2 * k2 + 2 * k3 + k4) / 6.0  # middle ones count double
+
+
+def rk4_steps(f: Fn, x0: Num, steps: Steps, keep: Fn) -> tuple[Array, Array]:
+    """
+    Take many rk4 steps in a row.
+
+    :param f: Function giving dx/dt from (x, t).
+    :param x0: The state at the start.
+    :param steps: Where the grid starts, the step size and the number of steps.
+    :param keep: Function picking what to store from the state each step.
+    :returns x_end: The state after the last step.
+    :returns kept: What keep picked at every step, x0 itself is NOT included.
+    """
+
+    # scan wants (carry, x) in and (carry, output) out
+    def step(x: Num, i: Num) -> tuple[Array, Array]:
+        x = rk4_step(x, steps.t0 + i * steps.dt, steps.dt, f)
+        return x, keep(x)  # (carry to the next step, output kept for this step)
+
+    x_end, kept = lax.scan(step, x0, jnp.arange(steps.n))
+    return x_end, kept
 
 
 def solve_ode(
