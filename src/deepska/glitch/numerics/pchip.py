@@ -20,8 +20,6 @@ from jax import Array
 
 from deepska.glitch.kinds import Arr, Num
 
-MIN_KNOTS = 3  # two ends and at least one middle point
-
 
 def pchip_gap(i: Num, x: Arr, y: Arr) -> tuple[Array, Array]:
     """
@@ -94,7 +92,8 @@ def pchip_build(
     :returns: The params (x, y, h, m), h the gap widths and m the knot slopes.
     """
     n = x.shape[0]
-    if n < MIN_KNOTS:  # as needs two end points and middle points to work
+    min_knots = 3  # pchip needs at least 3 points to work
+    if n < min_knots:  # as needs two end points and middle points to work
         msg = "pchip needs at least 3 points"
         raise ValueError(msg)
 
