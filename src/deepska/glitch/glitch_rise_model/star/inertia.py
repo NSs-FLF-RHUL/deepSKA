@@ -4,7 +4,7 @@ Moments of inertia of the 3 bits of the star.
 
 - Moment of inertia for whole star.
 - Moment of inertia of cylindrical shells.
-- Height of the cylinder the crust is modelled as.
+- Height of the cylinder that the crust is modeled as.
 - Moment of inertia of the core superfluid.
 - Moment of inertia of whatever isnt superfluid.
 """
