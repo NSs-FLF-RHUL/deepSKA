@@ -8,8 +8,10 @@ Just wiring, runs the star pieces in the order they depend on each other.
 from deepska.glitch.glitch_rise_model.star.cylinder_inertia_spline import (
     cylinder_inertia_spline,
 )
-from deepska.glitch.glitch_rise_model.star.density_profile import density_profile
-from deepska.glitch.glitch_rise_model.star.density_spline import density_spline
+from deepska.glitch.glitch_rise_model.star.density import (
+    density_profile,
+    density_spline,
+)
 from deepska.glitch.glitch_rise_model.star.drip_radius import drip_radius
 from deepska.glitch.glitch_rise_model.star.equilibrium_glitch import equilibrium_glitch
 from deepska.glitch.glitch_rise_model.star.inertia import inertia
