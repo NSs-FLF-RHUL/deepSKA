@@ -5,6 +5,7 @@ Density of the star from the tov history.
 - Density at every row of the tov history.
 - Spline of density against radius.
 """
+
 import jax
 import jax.numpy as jnp
 from jax import Array
