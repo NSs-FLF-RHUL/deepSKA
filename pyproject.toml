@@ -8,7 +8,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Typing :: Typed",
 ]
-dependencies = []
+dependencies = ["jax>=0.10", "matplotlib>=3.9", "numpy>=2"]
 description = "Machine-Learning Based Populations Synthesis Code for Neutron Stars in Python "
 dynamic = ["version"]
 keywords = []
@@ -71,6 +71,7 @@ lint.select = ["ALL"]
 lint.isort.known-first-party = ["deepska"]
 lint.mccabe.max-complexity = 18
 lint.pep8-naming.classmethod-decorators = ["classmethod"]
+namespace-packages = ["scripts/"]
 
 [tool.tox]
 env_list = ["py311"]
