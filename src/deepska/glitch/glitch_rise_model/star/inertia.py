@@ -2,6 +2,7 @@
 """
 Moments of inertia of the 3 bits of the star.
 
+- Splines of dI/dr for spherical and cylindrical shells.
 - Moment of inertia for whole star.
 - Moment of inertia of cylindrical shells.
 - Height of the cylinder that the crust is modeled as.
@@ -9,10 +10,39 @@ Moments of inertia of the 3 bits of the star.
 - Moment of inertia of whatever isnt superfluid.
 """
 
+import jax.numpy as jnp
 from jax import Array
 
 from deepska.glitch.kinds import Num, Splines
-from deepska.glitch.numerics.pchip import pchip_integral
+from deepska.glitch.numerics.pchip import pchip_build, pchip_integral
+
+
+def sphere_inertia_spline(r_hist: Num, rho_hist: Num, n_valid: Num) -> Array:
+    """
+    Build the spline of dI/dr of spherical shells.
+
+    dI/dr is 8 pi / 3 * rho * r**4.
+
+    :param r_hist: Radius at every tov row in cm.
+    :param rho_hist: Mass density at every tov row in g/cm**3.
+    :param n_valid: Number of real rows before the padding.
+    :returns: The spline params (x, y, h, m).
+    """
+    return pchip_build(r_hist, 8.0 * jnp.pi / 3.0 * rho_hist * r_hist**4, n_valid)
+
+
+def cylinder_inertia_spline(r_hist: Num, rho_hist: Num, n_valid: Num) -> Array:
+    """
+    Build the spline of dI/dr per unit height of cylindrical shells.
+
+    dI/dr is 2 pi * rho * r**3.
+
+    :param r_hist: Radius at every tov row in cm.
+    :param rho_hist: Mass density at every tov row in g/cm**3.
+    :param n_valid: Number of real rows before the padding.
+    :returns: The spline params (x, y, h, m).
+    """
+    return pchip_build(r_hist, 2.0 * jnp.pi * rho_hist * r_hist**3, n_valid)
 
 
 def star_inertia(m_star: Num, r_star: Num) -> Array:
