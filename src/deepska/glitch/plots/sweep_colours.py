@@ -70,7 +70,7 @@ def channel_scale(channel: int, low: Num, high: Num, *, log: bool) -> tuple[Any,
 
 
 def sweep_colours(
-    shown: Grid, values: Grid, log_above: float = 30, max_ticks: int = 6
+    shown: Grid, values: Grid, *, log_above: float = 30, max_ticks: int = 6
 ) -> tuple[list[Colour], list[Bar]]:
     """
     Make a colour for each drawn run and a colour bar for each swept input.
