@@ -35,7 +35,7 @@ def paper_output(arrays: PaperArrays, spin: Spin, vela: Vela) -> None:
     """
     a = arrays
     b_label = "mutual friction coefficient B"
-    profile_labels = ("r (km)", "Omega_sf (rad/s)")
+    profile_labels = (r"$r$ (km)", r"$\Omega_{sf}$ (rad/s)")
     dv_unit, f_unit = 1e4, 1e15  # table 2 prints dv in 1e4 cm/s and f in 1e15 dyn/cm
     weak, strong = 0, 1  # the 2 core couplings, first axis of the grid
     t_hist = spin.dt * np.arange(1, spin.n_t + 1)  # time of every step
