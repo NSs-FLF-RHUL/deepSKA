@@ -25,8 +25,7 @@ import time
 
 import numpy as np
 
-from deepska.glitch.analysis.grid_check import grid_check
-from deepska.glitch.analysis.grid_variants import grid_variants
+from deepska.glitch.analysis.grid import grid_check, grid_variants
 from deepska.glitch.analysis.make_run_summary import make_run_summary
 from deepska.glitch.analysis.sensitivity import sensitivity
 from deepska.glitch.data.paper_inputs import (

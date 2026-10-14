@@ -5,20 +5,18 @@ Everything the spin equations need from the star.
 Just wiring, runs the star pieces in the order they depend on each other.
 """
 
-from deepska.glitch.glitch_rise_model.star.cylinder_inertia_spline import (
-    cylinder_inertia_spline,
-)
 from deepska.glitch.glitch_rise_model.star.density import (
     density_profile,
     density_spline,
 )
 from deepska.glitch.glitch_rise_model.star.drip_radius import drip_radius
 from deepska.glitch.glitch_rise_model.star.equilibrium_glitch import equilibrium_glitch
-from deepska.glitch.glitch_rise_model.star.inertia import inertia
-from deepska.glitch.glitch_rise_model.star.shells import shells
-from deepska.glitch.glitch_rise_model.star.sphere_inertia_spline import (
+from deepska.glitch.glitch_rise_model.star.inertia import (
+    cylinder_inertia_spline,
+    inertia,
     sphere_inertia_spline,
 )
+from deepska.glitch.glitch_rise_model.star.shells import shells
 from deepska.glitch.glitch_rise_model.star.tov import tov
 from deepska.glitch.kinds import Fn, Num, Splines, Star, StarInputs
 
