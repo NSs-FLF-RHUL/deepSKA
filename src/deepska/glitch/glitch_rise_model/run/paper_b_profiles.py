@@ -3,8 +3,8 @@
 
 from deepska.glitch.data.paper_inputs import b_flat
 from deepska.glitch.data.paper_labels import cases
-from deepska.glitch.glitch_rise_model.drag.make_b_profile import make_b_profile
-from deepska.glitch.glitch_rise_model.drag.make_b_profile_flat import (
+from deepska.glitch.glitch_rise_model.drag.make_b_profile import (
+    make_b_profile,
     make_b_profile_flat,
 )
 from deepska.glitch.kinds import Fn
