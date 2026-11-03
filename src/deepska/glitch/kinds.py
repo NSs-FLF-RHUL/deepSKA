@@ -453,7 +453,8 @@ class Eos(NamedTuple):
         transition: Transition
             The crust-core transition.
         n_drip: Array
-            The first grid point with a neutron gas, in fm^-3.
+            The first grid point with a neutron gas, in fm^-3, nan when the walk
+            never dripped.
         in_crust: Array
             Per crust grid point, True below n_cc.
 
@@ -464,3 +465,22 @@ class Eos(NamedTuple):
     transition: Transition
     n_drip: Array
     in_crust: Array
+
+
+class EosTable(NamedTuple):
+    """
+    One metamodel eos as a plain table, with the core carried on for whole stars.
+
+    Attributes:
+        table: dict[str, np.ndarray]
+            nb, eps, p and the crust flag at every point, MeV and fm.
+        n_drip: float
+            The neutron drip density in fm^-3.
+        n_cc: float
+            The crust-core transition density in fm^-3.
+
+    """
+
+    table: dict[str, np.ndarray]
+    n_drip: float
+    n_cc: float

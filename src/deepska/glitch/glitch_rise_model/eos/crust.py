@@ -498,43 +498,86 @@ def starts_at(nb: Num, carry: WalkCarry) -> Starts:
 
 # the walk over n_b, doc sections 7 and 11
 def walk(
-    nbs: Arr, bulk: Bulk, *, n_drip_free: float = 5e-5, n_newton: int = 60
+    nbs: Arr,
+    bulk: Bulk,
+    *,
+    n_drip_free: float = 5e-5,
+    n_newton: int = 60,
+    converged: float = 1e-4,
 ) -> Crust:
     """
     Solve the cell at every n_b of an increasing grid, doc sections 7 and 11.
 
     Three zones. Below n_drip_free only the three-unknown starts count. Then the
     four-unknown solve is watched for a neutron gas with a lower eps, the moment of
-    drip. After it the four-unknown answer is taken. The previous answers are carried
-    along as the first starts.
+    drip: the lowest four-unknown lane that converged with a gas beats the
+    three-unknown answer. Lanes that did not converge are left out of that test, as one
+    run into the edge of the box (a one-neutron cluster, say) can sit lower without
+    being a cell. After drip the four-unknown answer is taken. The previous answers are
+    carried along as the first starts.
 
     :param nbs: The grid in fm^-3, increasing.
     :param bulk: The metamodel inputs.
     :param n_drip_free: Below this n_b drip is certainly not reached, so n_g = 0 only.
     :param n_newton: Newton steps at each n_b.
+    :param converged: A slope size below this is a lane that got to a minimum.
     :returns: One entry per n_b.
     """
     n_three = 1 + len(fixed3)  # starts_at puts the three-unknown starts first
 
+    def best(lanes: Lanes, ok: Arr) -> tuple[Array, Array, Array]:
+        # the lowest eps lane of those where ok is true
+        e = jnp.where(ok, lanes.eps, jnp.inf)
+        k = jnp.argmin(e)
+        return lanes.ends[k], e[k], lanes.g_norm[k]
+
     def at(carry: WalkCarry, nb: Array) -> tuple[WalkCarry, tuple[Array, ...]]:
-        lanes = run_starts(nb, starts_at(nb, carry), bulk, n=n_newton)  # eleven lanes
-        ends, e, gn = lanes.ends, lanes.eps, lanes.g_norm
-        i3 = jnp.argmin(e[:n_three])  # best of the three-unknown starts
-        i4 = n_three + jnp.argmin(e[n_three:])  # best of the four-unknown starts
+        starts = starts_at(nb, carry)
+        three = Starts(starts.u[:n_three], starts.pins[:n_three])
+        four = Starts(starts.u[n_three:], starts.pins[n_three:])
+        # each zone runs only the lanes it uses: zone 0 the five three-unknown ones,
+        # zone 1 both groups to watch for drip, zone 2 the six four-unknown ones. One
+        # cond per group, so each group's newton is compiled once. A group not run has
+        # eps inf, so it is never picked
         before = nb < n_drip_free  # zone 0: n_g = 0 only
-        gas = (ends[i4, 2] > 0) & (e[i4] < e[i3])  # the free solve found a neutron gas
+        zone = jnp.where(before, 0, jnp.where(carry.dripped, 2, 1))
+        lanes3 = lax.cond(
+            zone != 2,  # noqa: PLR2004, zone 2
+            lambda: run_starts(nb, three, bulk, n=n_newton),
+            lambda: Lanes(three.u, jnp.full(n_three, jnp.inf), jnp.zeros(n_three)),
+        )
+        n_four = len(four.u)
+        lanes4 = lax.cond(
+            zone != 0,
+            lambda: run_starts(nb, four, bulk, n=n_newton),
+            lambda: Lanes(four.u, jnp.full(n_four, jnp.inf), jnp.zeros(n_four)),
+        )
+        end3, e3, gn3 = best(lanes3, jnp.ones(n_three, bool))
+        low4 = best(lanes4, jnp.ones(n_four, bool))  # the lowest four-unknown lane
+        # the moment of drip: a converged lane with a neutron gas, lower than no gas
+        real_gas = (lanes4.ends[:, 2] > 0) & (lanes4.g_norm < converged)
+        gas_lane = best(lanes4, real_gas)
+        gas = gas_lane[1] < e3
         use4 = ~before & (
             carry.dripped | gas
         )  # zone 2 after drip, or the moment of drip
-        i = jnp.where(use4, i4, i3)
-        zone = jnp.where(before, 0, jnp.where(carry.dripped, 2, 1))
+        # the four-unknown answer: that gas lane at the moment of drip, after it the
+        # lowest four-unknown lane, as before
+        end4, e4, gn4 = (
+            jnp.where(carry.dripped, a, b) for a, b in zip(low4, gas_lane, strict=True)
+        )
         new = WalkCarry(
-            prev3=jnp.where(before | ~carry.dripped, ends[i3], carry.prev3),
-            prev4=jnp.where(before, carry.prev4, ends[i4]),
+            prev3=jnp.where(before | ~carry.dripped, end3, carry.prev3),
+            prev4=jnp.where(before, carry.prev4, jnp.where(use4, end4, low4[0])),
             has4=carry.has4 | ~before,
             dripped=carry.dripped | use4,
         )
-        return new, (ends[i], e[i], gn[i], zone)
+        picked = (
+            jnp.where(use4, end4, end3),
+            jnp.where(use4, e4, e3),
+            jnp.where(use4, gn4, gn3),
+        )
+        return new, (*picked, zone)
 
     no = jnp.zeros((), bool)
     carry0 = WalkCarry(prev3=fe56, prev4=fe56, has4=no, dripped=no)

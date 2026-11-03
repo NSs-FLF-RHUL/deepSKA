@@ -8,6 +8,7 @@ m_u = 1.66053906660e-24  # g
 hbar = 1.054571817e-27  # erg s
 kappa = jnp.pi * hbar / m_u  # quantum of circulation, cm^2/s
 mev = 1.602176634e-6  # MeV -> erg
+mev_fm3 = mev * 1e39  # MeV fm^-3 -> erg/cm^3, the eos's units to the star's
 
 # units in cgs, so x / km is x in km, same as MeV above
 km = 1e5  # cm

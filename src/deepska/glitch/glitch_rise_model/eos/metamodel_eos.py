@@ -46,8 +46,15 @@ def metamodel_eos(
     """
     nbs = jnp.geomspace(nb_lo, nb_hi, n_crust)
     w = walk(nbs, bulk)  # certainly crust and the n_cc search, section 9
-    n_drip = w.nb[jnp.argmax(w.ng > 0)]
+    # the first grid point with a neutron gas. A walk that never drips is a crust the
+    # minimiser got wrong, not one with no drip, so n_drip is nan and the set dropped
+    dripped = (w.ng > 0).any()
+    n_drip = jnp.where(dripped, w.nb[jnp.argmax(w.ng > 0)], jnp.nan)
     tr = n_cc(w, bulk)  # between 0.01 and 0.12, section 10
+    tr = tr._replace(
+        n_cc=jnp.where(dripped, tr.n_cc, jnp.nan),
+        case=jnp.where(dripped, tr.case, 0),
+    )
     nb_core = jnp.linspace(tr.n_cc, 2 * bulk.ns, n_core)  # certainly core
     u = jax.vmap(partial(uniform, bulk=bulk))(nb_core)
     core = Core(nb=nb_core, eps=u.eps, p=u.p, delta=u.delta, mu_n=u.mu_n)

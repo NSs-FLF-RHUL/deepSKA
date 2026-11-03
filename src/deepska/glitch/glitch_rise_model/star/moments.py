@@ -21,14 +21,19 @@ from deepska.glitch.glitch_rise_model.star.tov import tov
 from deepska.glitch.kinds import Fn, Num, Splines, Star, StarInputs
 
 
-def moments(inputs: StarInputs, p0: Num, p_min: Num, inverse: Fn) -> Star:
+def moments(
+    inputs: StarInputs, p0: Num, p_min: Num, inverse: Fn, *, inner_core: bool = False
+) -> Star:
     """
     Build the star and everything the spin equations need from it.
 
     :param inputs: The star inputs.
-    :param p0: Pressure at the crust-core boundary in erg/cm**3.
+    :param p0: Pressure at r0, where the TOV starts, in erg/cm**3.
     :param p_min: Surface pressure in erg/cm**3.
     :param inverse: The inverse eos, rho(P).
+    :param inner_core: False: r0 is the crust-core boundary, as in the paper. True: r0
+        is where the inner core ends, the TOV marches the outer core too, and the
+        crust-core boundary is found on the way, where rho(r) = rho_cc.
     :returns: The built star: radii, moments of inertia, eq 23 and the shells.
     """
     r_star, m_star, n_valid, r_hist, m_hist, p_hist = tov(p0, p_min, inverse, inputs)
@@ -38,12 +43,18 @@ def moments(inputs: StarInputs, p0: Num, p_min: Num, inverse: Fn) -> Star:
         sphere_inertia_spline(r_hist, rho_hist, n_valid),
         cylinder_inertia_spline(r_hist, rho_hist, n_valid),
     )
-    r_drip = drip_radius(splines.rho_r, inputs.rho_d, inputs.r0, r_star)
+    # the crust-core boundary: found like drip when the TOV started deeper
+    r_cc = (
+        drip_radius(splines.rho_r, inputs.rho_cc, inputs.r0, r_star)
+        if inner_core
+        else inputs.r0
+    )
+    r_drip = drip_radius(splines.rho_r, inputs.rho_d, r_cc, r_star)
     i_tot, i_crust_total, i_cyl_unit, h, i_sf, i_core, i_crust = inertia(
-        m_star, r_star, inputs.r0, r_drip, splines
+        m_star, r_star, r_cc, r_drip, splines
     )
     dnu_equil = equilibrium_glitch(i_sf, i_tot, inputs.dom_crit)  # eq 23
-    a_shell, x, dx, rho_shell = shells(inputs.r0, r_drip, h, splines, inputs.n_shells)
+    a_shell, x, dx, rho_shell = shells(r_cc, r_drip, h, splines, inputs.n_shells)
     return Star(
         r_star,
         m_star,
