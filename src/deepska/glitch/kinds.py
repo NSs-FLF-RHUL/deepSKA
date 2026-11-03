@@ -3,8 +3,10 @@
 Type names and records used across the glitch module.
 
 The names keep the hints short. The records group the inputs that always get passed
-together (a star, a time grid, the spin settings), as ruff wont take more than 5
-arguments on one function.
+together (a star, a time grid, the spin settings), as ruff will not take more than 5
+arguments on one function, and the outputs that come back together (uniform matter,
+the crust walk, the core table, the eos), so a caller reads them by name rather than
+by position.
 """
 
 from collections.abc import Callable
@@ -210,3 +212,255 @@ class Store(NamedTuple):
 
     keep: Fn | None = None
     snapshot_steps: list[int] | None = None
+
+
+class Bulk(NamedTuple):
+    """
+    The metamodel inputs: two sets of five coefficients and n_sat.
+
+    Attributes:
+        csat: Arr
+            E_sat, 0, K_sat, Q_sat, Z_sat in MeV; the second is always 0.
+        csym: Arr
+            E_sym, L_sym, K_sym, Q_sym, Z_sym in MeV.
+        ns: Num
+            The saturation density n_sat in fm^-3.
+
+    """
+
+    csat: Arr
+    csym: Arr
+    ns: Num
+
+
+class Uniform(NamedTuple):
+    """
+    Uniform matter at one density, what uniform gives back. MeV and fm.
+
+    Attributes:
+        eps: Array
+            The energy density.
+        p: Array
+            The pressure.
+        delta: Array
+            The isospin asymmetry, 1 - 2 x_p.
+        mu_n: Array
+            The neutron chemical potential.
+
+    """
+
+    eps: Array
+    p: Array
+    delta: Array
+    mu_n: Array
+
+
+class Cell(NamedTuple):
+    """
+    The four unknowns of one crust cell, crust doc section 7.
+
+    Attributes:
+        dcl: Num
+            The isospin asymmetry of the cluster, 1 - 2 Y_p.
+        ncl: Num
+            The density inside the cluster in fm^-3.
+        ng: Num
+            The density of the neutron gas in fm^-3.
+        a_cl: Num
+            The mass number A of the cluster.
+
+    """
+
+    dcl: Num
+    ncl: Num
+    ng: Num
+    a_cl: Num
+
+
+class CellEnergy(NamedTuple):
+    """
+    What the 4x4 newton minimises: eps with its slopes and curvatures by hand.
+
+    Attributes:
+        eps: Fn
+            eps(u) at a (4,) point.
+        slopes: Fn
+            The four d eps/d u_i at a (4,) point, (4,).
+        curvatures: Fn
+            The sixteen d2 eps/d u_i d u_j at a (4,) point, (4, 4).
+
+    """
+
+    eps: Fn
+    slopes: Fn
+    curvatures: Fn
+
+
+class Ranges(NamedTuple):
+    """
+    The box the 4x4 newton keeps each unknown inside.
+
+    Attributes:
+        lo: Arr
+            The lower edges, (4,).
+        hi: Arr
+            The upper edges, (4,).
+
+    """
+
+    lo: Arr
+    hi: Arr
+
+
+class Starts(NamedTuple):
+    """
+    The starting points of the crust cell minimiser at one n_b, what starts_at makes.
+
+    Attributes:
+        u: Array
+            One row (dcl, n_cl, n_g, A) per start, (11, 4).
+        pins: Array
+            1 for an unknown that moves and 0 for one held where it starts, (11, 4).
+
+    """
+
+    u: Array
+    pins: Array
+
+
+class Lanes(NamedTuple):
+    """
+    Every start run at once at one n_b, what run_starts gives back.
+
+    Attributes:
+        ends: Array
+            Where each start finished, (11, 4).
+        eps: Array
+            The cell energy density there, inf for a start that blew up.
+        g_norm: Array
+            The size of the slope there, 0 at a true minimum.
+
+    """
+
+    ends: Array
+    eps: Array
+    g_norm: Array
+
+
+class Crust(NamedTuple):
+    """
+    The crust walk, one entry per n_b of the grid. MeV and fm.
+
+    Attributes:
+        nb: Array
+            The grid.
+        dcl: Array
+            The isospin asymmetry of the best cell's cluster.
+        ncl: Array
+            The density inside its cluster.
+        ng: Array
+            The density of its neutron gas.
+        a_cl: Array
+            The mass number of its cluster.
+        eps: Array
+            The cell energy density.
+        p: Array
+            The pressure.
+        mu_n: Array
+            The neutron chemical potential.
+        g_norm: Array
+            The size of the slope at the answer, 0 when the minimiser got there.
+        zone: Array
+            0 before drip is possible, 1 while it is looked for, 2 after it.
+        z: Array
+            The proton number of the cluster, A Y_p.
+        v: Array
+            The volume fraction of the cluster.
+
+    """
+
+    nb: Array
+    dcl: Array
+    ncl: Array
+    ng: Array
+    a_cl: Array
+    eps: Array
+    p: Array
+    mu_n: Array
+    g_norm: Array
+    zone: Array
+    z: Array
+    v: Array
+
+
+class Core(NamedTuple):
+    """
+    The outer core from n_cc to 2 n_sat. MeV and fm.
+
+    Attributes:
+        nb: Array
+            The grid.
+        eps: Array
+            The energy density.
+        p: Array
+            The pressure.
+        delta: Array
+            The isospin asymmetry, 1 - 2 x_p.
+        mu_n: Array
+            The neutron chemical potential.
+
+    """
+
+    nb: Array
+    eps: Array
+    p: Array
+    delta: Array
+    mu_n: Array
+
+
+class Transition(NamedTuple):
+    """
+    The crust-core transition, what n_cc gives back, crust doc section 10.
+
+    Attributes:
+        n_cc: Array
+            The transition density in fm^-3, nan when there is no transition.
+        case: Array
+            0 none, 1 a plain crossing below n_pa, 2 the line from n_pa, 3 a crossing
+            above n_pa.
+        n_pa: Array
+            The pasta density, where the cluster fills 1/8 of the cell.
+        de_pa: Array
+            delta_E at n_pa in MeV per nucleon.
+
+    """
+
+    n_cc: Array
+    case: Array
+    n_pa: Array
+    de_pa: Array
+
+
+class Eos(NamedTuple):
+    """
+    One metamodel eos, crust doc section 11.
+
+    Attributes:
+        crust: Crust
+            The crust walk.
+        core: Core
+            The outer core table.
+        transition: Transition
+            The crust-core transition.
+        n_drip: Array
+            The first grid point with a neutron gas, in fm^-3.
+        in_crust: Array
+            Per crust grid point, True below n_cc.
+
+    """
+
+    crust: Crust
+    core: Core
+    transition: Transition
+    n_drip: Array
+    in_crust: Array
