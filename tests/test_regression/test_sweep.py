@@ -17,6 +17,7 @@ from pathlib import Path
 
 import jax.numpy as jnp
 import numpy as np
+import pytest
 
 from deepska.glitch.analysis.closest_run import closest_run
 from deepska.glitch.analysis.make_run_summary import make_run_summary
@@ -88,6 +89,7 @@ INPUTS = {
 folder = "sweeps"  # made in the folder you run from
 
 
+@pytest.mark.regression
 def test_regression_sweep(
     draws_reference_data: Path = Path(__file__).parent / "sweep-draws.npz",
     out_reference_data: Path = Path(__file__).parent / "sweep-out.npz",

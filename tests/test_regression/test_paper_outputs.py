@@ -12,6 +12,7 @@ if __name__ == "__main__":
 from pathlib import Path
 
 import jax.numpy as jnp
+import pytest
 from jax import Array
 
 from deepska.glitch.data.b_data import rho_b_data
@@ -45,6 +46,7 @@ from deepska.glitch.glitch_rise_model.star.dm_m import dm_m
 from deepska.glitch.kinds import Arr, PaperArrays, Spin, StarInputs
 
 
+@pytest.mark.regression
 def test_regression_paper(
     reference_data: Path = Path(__file__).parent / "paper-outputs.npz",
 ) -> None:

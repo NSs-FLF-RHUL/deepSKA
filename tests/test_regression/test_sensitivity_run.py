@@ -12,6 +12,7 @@ if __name__ == "__main__":
         del sys.modules[name]
 
 import numpy as np
+import pytest
 
 from deepska.glitch.analysis.make_run_summary import make_run_summary
 from deepska.glitch.analysis.sensitivity import sensitivity
@@ -76,6 +77,7 @@ INPUTS = {
 }
 
 
+@pytest.mark.regression
 def test_regression_sensitivity_run(
     base_reference_data: Path = Path(__file__).parent / "sensitivity-base-outputs.npz",
     slopes_refrence_data: Path = Path(__file__).parent

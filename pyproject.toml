@@ -48,6 +48,9 @@ explicit_package_bases = true
 
 [tool.pytest.ini_options]
 addopts = ["--color=yes", "--import-mode=importlib", "--verbose"]
+markers = [
+  "regression: marks regression tests (deselect with '-m \"not regression\"')"
+]
 testpaths = ["tests"]
 
 [tool.ruff]
