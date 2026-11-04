@@ -48,7 +48,8 @@ from deepska.glitch.kinds import Arr, PaperArrays, Spin, StarInputs
 
 @pytest.mark.regression
 def test_regression_paper(
-    reference_data: Path = Path(__file__).parent / "paper-outputs.npz",
+    regression_data: Path,
+    arrays_ref: str = "paper-outputs.npz",
 ) -> None:
     """
     Regression test for `scripts/paper.py`.
@@ -94,6 +95,6 @@ def test_regression_paper(
         rho_b_data=rho_b_data,
         bcore_range=bcore_range,
     )
-    reference = PaperArrays.load(reference_data)
+    reference = PaperArrays.load(regression_data / arrays_ref)
 
     assert reference.arrays_match(arrays)

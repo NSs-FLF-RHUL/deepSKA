@@ -79,9 +79,9 @@ INPUTS = {
 
 @pytest.mark.regression
 def test_regression_sensitivity_run(
-    base_reference_data: Path = Path(__file__).parent / "sensitivity-base-outputs.npz",
-    slopes_refrence_data: Path = Path(__file__).parent
-    / "sensitivity-slopes-outputs.npz",
+    regression_data: Path,
+    base_ref: str = "sensitivity-base-outputs.npz",
+    slopes_ref: str = "sensitivity-slopes-outputs.npz",
 ) -> None:
     """
     Regression test for `scripts/sensitivity.py`.
@@ -98,8 +98,8 @@ def test_regression_sensitivity_run(
     summary = make_run_summary(t_hist, vela, dt, keep_dnu=True)
     base, slopes = sensitivity(INPUTS, inputs_to_vary, summary, step)
 
-    base_reference = np.load(base_reference_data)
-    slopes_reference = np.load(slopes_refrence_data)
+    base_reference = np.load(regression_data / base_ref)
+    slopes_reference = np.load(regression_data / slopes_ref)
 
     for name, array in base_reference.items():
         assert np.allclose(base[name], array)

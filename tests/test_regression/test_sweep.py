@@ -91,11 +91,11 @@ folder = "sweeps"  # made in the folder you run from
 
 @pytest.mark.regression
 def test_regression_sweep(
-    draws_reference_data: Path = Path(__file__).parent / "sweep-draws.npz",
-    out_reference_data: Path = Path(__file__).parent / "sweep-out.npz",
-    values_reference_data: Path = Path(__file__).parent / "sweep-values.npz",
-    best_and_where_reference_data: Path = Path(__file__).parent
-    / "sweep-best-and-where.npz",
+    regression_data: Path,
+    draws_ref: str = "sweep-draws.npz",
+    out_ref: str = "sweep-out.npz",
+    values_ref: str = "sweep-values.npz",
+    bw_ref: str = "sweep-best-and-where.npz",
 ) -> None:
     """
     Regression test for `scripts/sweep.py`.
@@ -114,10 +114,10 @@ def test_regression_sweep(
     out, values, draws = run_sweep(INPUTS, sweep_over, summary, batching, matrix=matrix)
     best, where = closest_run(out["rms"], values, matrix=matrix)
 
-    out_reference = np.load(out_reference_data)
-    values_reference = np.load(values_reference_data)
-    draws_reference = np.load(draws_reference_data)
-    best_and_where_reference = np.load(best_and_where_reference_data)
+    out_reference = np.load(regression_data / out_ref)
+    values_reference = np.load(regression_data / values_ref)
+    draws_reference = np.load(regression_data / draws_ref)
+    best_and_where_reference = np.load(regression_data / bw_ref)
 
     for computed, reference in [
         (out, out_reference),
