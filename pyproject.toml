@@ -84,7 +84,11 @@ env_list = ["py311"]
 commands = [["mkdocs", "build", "--strict", "--verbose"]]
 extras = ["docs"]
 
+[tool.tox.env.regression]
+commands = [["pytest", "-m", "regression", "tests/test_regression/"]]
+extras = ["test"]
+
 [tool.tox.env_run_base]
-commands = [["pytest", "--cov", "--cov-report=xml", "tests/"]]
+commands = [["pytest", "-m", '"not regression"', "--cov", "--cov-report=xml", "tests/"]]
 extras = ["test"]
 gh.python."3.11" = ["py311"]
