@@ -177,6 +177,33 @@ class PaperArrays(NamedTuple):
     rho_b_data: Arr
     bcore_range: Arr
 
+    @classmethod
+    def load(cls, file: Path) -> "PaperArrays":
+        """
+        Load array data from an `.npz`-file format.
+
+        The file to be loaded must have names associated with arrays, akin
+        to the file format created by `PaperArrays.save`.
+        """
+        arrays = jnp.load(file)
+        return cls(**arrays)
+
+    def arrays_match(self, other: "PaperArrays", **close_kwargs: float) -> bool:
+        """
+        Return `True` if all stored arrays are equal, to the given tolerance.
+
+        `jax.numpy.allclose` is used to compare attributes of the two instances.
+
+        :param other: `PaperArrays` instance to compare attributes with.
+        :param close_kwargs: Keyword-arguments to be forwarded to `jax.numpy.allclose`.
+        """
+        for field in self._fields:
+            if not jnp.allclose(
+                getattr(self, field), getattr(other, field), **close_kwargs
+            ):
+                return False
+        return True
+
     def save(self, filename: Path) -> None:
         """
         Save stored arrays to `.npz` format.

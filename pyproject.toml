@@ -65,6 +65,7 @@ lint.per-file-ignores = { "tests*" = [
   "D100",   # Missing docstring in public module
   "D401",   # 1st line should be imperative
   "INP001", # File is part of an implicit namespace package.
+  "PT028",  # Constant value in test function input.
   "S101",   # Use of `assert` detected
 ] }
 lint.select = ["ALL"]
