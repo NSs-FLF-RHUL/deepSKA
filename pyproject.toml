@@ -20,7 +20,7 @@ requires-python = ">=3.11"
 urls.homepage = "https://github.com/NSs-FLF-RHUL/deepska"
 
 [project.optional-dependencies]
-dev = ["build", "mypy", "pre-commit", "ruff", "tox", "twine"]
+dev = ["build", "mypy", "pre-commit", "ruff", "tox", "twine", "types-requests"]
 docs = [
   "mkdocs",
   "mkdocs-include-markdown-plugin",
