@@ -47,7 +47,7 @@ from deepska.glitch.kinds import Arr, PaperArrays, Spin, StarInputs
 
 
 @pytest.mark.regression
-def test_regression_paper(
+def test_regression_gca2018(
     regression_data: Path,
     arrays_ref: str = "array-outputs.npz",
 ) -> None:
