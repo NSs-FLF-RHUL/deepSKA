@@ -49,13 +49,14 @@ from deepska.glitch.kinds import Arr, PaperArrays, Spin, StarInputs
 @pytest.mark.regression
 def test_regression_paper(
     regression_data: Path,
-    arrays_ref: str = "paper-outputs.npz",
+    arrays_ref: str = "array-outputs.npz",
 ) -> None:
     """
     Regression test for `scripts/paper.py`.
 
-    TODO: Update docstring to use descriptive language, rather than reference by file.
-    Will need the `paper.py` script itself to be given a more descriptive name, too.
+    Recreates the results of the paper by Graber, Cumming, Anderson (2018), and compares
+    the generated results to those that were created by the initial incarnation of the
+    script.
 
     Also, the function body here is a direct copy-paste of the script. Should consider
     moving this code somewhere common inside the package (maybe a workflows / analysis

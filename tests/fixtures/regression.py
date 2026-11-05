@@ -1,12 +1,26 @@
+import io
 import zipfile
 from pathlib import Path
 
 import pytest
+import requests
+
+
+@pytest.fixture(scope="session")
+def glitchsim_regression_data_archive() -> str:
+    """
+    Download link that can be used to fetch regression data for the `glitchsim` scripts.
+
+    Deliberately hardcoded. Last updated 2026-11-05.
+    """
+    return "https://github.com/NSs-FLF-RHUL/deepSKA/releases/download/glitchsim-regression-outputs/graber-cumming-anderson-2018-recreation.zip"
 
 
 @pytest.fixture(scope="session")
 def regression_data(
-    tmp_path_factory: pytest.TempPathFactory, subdirectory: str = "regression_data"
+    tmp_path_factory: pytest.TempPathFactory,
+    glitchsim_regression_data_archive: str,
+    subdirectory: str = "regression_data",
 ) -> Path:
     """
     Fetch reference data for regression tests.
@@ -23,10 +37,9 @@ def regression_data(
     """
     extract_to = tmp_path_factory.mktemp(subdirectory)
 
-    # Replace with fetch from DOI-registered site.
-    fetch_from = Path(__file__).parent / "reference_data.zip"
+    response = requests.get(glitchsim_regression_data_archive, timeout=30.0)
 
-    archive = zipfile.ZipFile(fetch_from, "r")
+    archive = zipfile.ZipFile(io.BytesIO(response.content))
     archive.extractall(extract_to)
 
     return extract_to

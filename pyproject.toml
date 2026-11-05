@@ -28,7 +28,7 @@ docs = [
   "mkdocstrings",
   "mkdocstrings-python",
 ]
-test = ["pytest", "pytest-cov"]
+test = ["pytest", "pytest-cov", "requests"]
 
 [build-system]
 build-backend = "setuptools.build_meta"
