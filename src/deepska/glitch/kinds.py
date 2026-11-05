@@ -8,8 +8,10 @@ arguments on one function.
 """
 
 from collections.abc import Callable
+from pathlib import Path
 from typing import Any, NamedTuple, TypeAlias
 
+import jax.numpy as jnp
 import numpy as np
 from jax import Array
 
@@ -174,6 +176,52 @@ class PaperArrays(NamedTuple):
     dnu_sweep: Arr
     rho_b_data: Arr
     bcore_range: Arr
+
+    @classmethod
+    def load(cls, file: Path) -> "PaperArrays":
+        """
+        Load array data from an `.npz`-file format.
+
+        The file to be loaded must have names associated with arrays, akin
+        to the file format created by `PaperArrays.save`.
+        """
+        arrays = jnp.load(file)
+        return cls(**arrays)
+
+    def arrays_match(self, other: "PaperArrays", **close_kwargs: float) -> bool:
+        """
+        Return `True` if all stored arrays are equal, to the given tolerance.
+
+        `jax.numpy.allclose` is used to compare attributes of the two instances.
+
+        :param other: `PaperArrays` instance to compare attributes with.
+        :param close_kwargs: Keyword-arguments to be forwarded to `jax.numpy.allclose`.
+        """
+        for field in self._fields:
+            if not jnp.allclose(
+                getattr(self, field), getattr(other, field), **close_kwargs
+            ):
+                return False
+        return True
+
+    def save(self, filename: Path) -> None:
+        """
+        Save stored arrays to `.npz` format.
+
+        Arrays are stored with their corresponding field names.
+
+        NOTE: This method requires casting all non-`jax` arrays to `jax.Array`
+        objects before saving, in order to invoke `jax.numpy.savez`. A
+        similar issue would be encountered if we wanted to use `numpy.savez`,
+        since each method only handles it's own native array type. As such,
+        to save a single file, we need to convert all the fields to one type
+        or the other.
+        """
+        dict_format = {
+            field: jnp.array(array) if isinstance(array, np.ndarray) else array
+            for field, array in self._asdict().items()
+        }
+        jnp.savez(filename, **dict_format)
 
 
 class Axes(NamedTuple):

@@ -11,6 +11,7 @@ on:
 
 jobs:
   tests:
+    name: Unit tests
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -45,3 +46,31 @@ jobs:
 
       - name: Install package and run tests
         run: tox run
+
+  regression-tests:
+    # Only run regression tests on a single OS, and for one Python version.
+    name: Regression tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v6
+
+      - name: Cache tox
+        uses: actions/cache@v5
+        with:
+          path: .tox
+          key: tox-${{hashFiles('pyproject.toml') }}
+
+      - name: Set up python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: pyproject.toml
+
+      - name: Install dependencies
+        run: python -m pip install tox tox-gh
+
+      - name: Install package and run tests
+        run: tox run -e regression
