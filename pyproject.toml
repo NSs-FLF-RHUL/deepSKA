@@ -8,7 +8,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Typing :: Typed",
 ]
-dependencies = []
+dependencies = ["jax>=0.10", "matplotlib>=3.9", "numpy>=2"]
 description = "Machine-Learning Based Populations Synthesis Code for Neutron Stars in Python "
 dynamic = ["version"]
 keywords = []
@@ -20,7 +20,7 @@ requires-python = ">=3.11"
 urls.homepage = "https://github.com/NSs-FLF-RHUL/deepska"
 
 [project.optional-dependencies]
-dev = ["build", "mypy", "pre-commit", "ruff", "tox", "twine"]
+dev = ["build", "mypy", "pre-commit", "ruff", "tox", "twine", "types-requests"]
 docs = [
   "mkdocs",
   "mkdocs-include-markdown-plugin",
@@ -28,7 +28,7 @@ docs = [
   "mkdocstrings",
   "mkdocstrings-python",
 ]
-test = ["pytest", "pytest-cov"]
+test = ["pytest", "pytest-cov", "requests"]
 
 [build-system]
 build-backend = "setuptools.build_meta"
@@ -48,6 +48,9 @@ explicit_package_bases = true
 
 [tool.pytest.ini_options]
 addopts = ["--color=yes", "--import-mode=importlib", "--verbose"]
+markers = [
+  "regression: marks regression tests (deselect with '-m \"not regression\"')"
+]
 testpaths = ["tests"]
 
 [tool.ruff]
@@ -65,12 +68,14 @@ lint.per-file-ignores = { "tests*" = [
   "D100",   # Missing docstring in public module
   "D401",   # 1st line should be imperative
   "INP001", # File is part of an implicit namespace package.
+  "PT028",  # Constant value in test function input.
   "S101",   # Use of `assert` detected
 ] }
 lint.select = ["ALL"]
 lint.isort.known-first-party = ["deepska"]
 lint.mccabe.max-complexity = 18
 lint.pep8-naming.classmethod-decorators = ["classmethod"]
+namespace-packages = ["scripts/"]
 
 [tool.tox]
 env_list = ["py311"]
@@ -79,7 +84,11 @@ env_list = ["py311"]
 commands = [["mkdocs", "build", "--strict", "--verbose"]]
 extras = ["docs"]
 
+[tool.tox.env.regression]
+commands = [["pytest", "-m", "regression", "tests/test_regression/"]]
+extras = ["test"]
+
 [tool.tox.env_run_base]
-commands = [["pytest", "--cov", "--cov-report=xml", "tests/"]]
+commands = [["pytest", "-m", "not regression", "--cov", "--cov-report=xml", "tests/"]]
 extras = ["test"]
 gh.python."3.11" = ["py311"]
