@@ -172,3 +172,6 @@ sweeps/
 # and any archives containing them
 **/*.npz
 **/*.zip
+
+# ignore the figures the metamodel script saves
+metamodel_out/
