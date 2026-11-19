@@ -3,9 +3,10 @@
 The crust: the cell at every density, drip and the pressure.
 
 At each of 600 densities the cell is found by the damped Newton of
-numerics/newton_4x4.py from eight fixed starts, and the lowest converged one with a
-proton wins. Every density is solved on its own, from the same eight starts, so the
-whole crust is one vmap over the densities with a vmap over the starts inside it.
+numerics/newton_4x4.py from eight fixed starts and a ninth made from their answers, and
+the lowest converged one with a proton wins. Every density is solved on its own, from
+the same eight starts, so the whole crust is one vmap over the densities with a vmap
+over the eight starts inside it.
 
 Shared arguments, the same in every function here:
 
@@ -74,12 +75,21 @@ def starts_at(n_b: Num) -> Array:
 
 def winner(n_b: Num, c_sat: Arr, c_sym: Arr, ns: Num) -> tuple[Array, Array, Array]:
     """
-    Find the cell at one density: Newton from all eight starts, then who wins.
+    Find the cell at one density: Newton from eight starts and a ninth, then who wins.
 
     A start may win only if |g| < 1e-4 (it converged) and Z = A (1 - d_cl) / 2 >= 1 (it
     has a proton); of those the lowest eps wins. If none passes, the lowest eps is
     taken anyway and its |g| is the warning: such a point can never hold the join and
     never enters the table.
+
+    The ninth start is made here, after the eight have run: the best answer of the
+    starts that hold n_g = 0, with 1% of n_b added as gas and all four unknowns free.
+    Just past drip the cell has only a little gas, about 1% of n_b. The three starts
+    with gas begin at 60% to 90% of n_b, and can run onto n_g = 0 and stop there with a
+    slope that is not 0. Then none of them may win, the cell without gas is kept one
+    grid point too long, and P falls at the next one. The ninth start begins next to
+    the cell with a little gas. It uses only the answers at this density, so the
+    densities are still solved each on its own.
 
     For derivatives with respect to the inputs, one clean Newton step is taken from the
     winner only, after it is chosen. Which start wins is held fixed, so a losing start,
@@ -91,6 +101,7 @@ def winner(n_b: Num, c_sat: Arr, c_sym: Arr, ns: Num) -> tuple[Array, Array, Arr
     """
     converged = 1e-4  # a start may win only with a slope below this
     close = 1e-3  # a slope this small is near enough for the clean step to be trusted
+    gas_added = 0.01  # the ninth start has this fraction of n_b as gas
 
     def eps_u(u: Arr) -> Array:
         return eps_cell(u, n_b, c_sat, c_sym, ns)
@@ -107,20 +118,34 @@ def winner(n_b: Num, c_sat: Arr, c_sym: Arr, ns: Num) -> tuple[Array, Array, Arr
     def one(start: Arr, free: Arr) -> tuple[Array, Array]:
         return newton(fns, start, box, free, n=30)
 
+    def may_win(ends: Arr, g_norm: Arr) -> tuple[Array, Array]:
+        # eps where each start ended, and whether it may win
+        eps = jax.vmap(eps_u)(ends)
+        eps = jnp.where(jnp.isfinite(eps), eps, jnp.inf)
+        z = ends[:, 3] * (1 - ends[:, 0]) / 2
+        return eps, (g_norm < converged) & (z >= 1) & jnp.isfinite(eps)
+
     # the choice is made on held values, so a start that ended on nan (it lost) can
     # never put a nan into the winner's derivatives
     ends, g_norm = lax.stop_gradient(jax.vmap(one)(starts_at(n_b), crust_free))
+    eps, ok = may_win(ends, g_norm)
 
-    eps = jax.vmap(eps_u)(ends)
-    eps = jnp.where(jnp.isfinite(eps), eps, jnp.inf)
+    # the ninth start: the best answer without gas, with a little gas added
+    no_gas = crust_free[:, 2] == 0
+    best_no_gas = ends[jnp.argmin(jnp.where(ok & no_gas, eps, jnp.inf))]
+    ninth = best_no_gas.at[2].set(gas_added * n_b)
+    all_free = jnp.ones(4)
+    end_9, g_9 = lax.stop_gradient(one(ninth, all_free))
 
-    z = ends[:, 3] * (1 - ends[:, 0]) / 2
-    ok = (g_norm < converged) & (z >= 1) & jnp.isfinite(eps)
+    ends = jnp.concatenate([ends, end_9[None]])
+    g_norm = jnp.concatenate([g_norm, g_9[None]])
+    frees = jnp.concatenate([crust_free, all_free[None]])
+    eps, ok = may_win(ends, g_norm)
     k = jnp.argmin(jnp.where(ok | ~ok.any(), eps, jnp.inf))
 
     # derivatives with respect to the inputs: one clean Newton step from the winner
     # held fixed (same value, right derivative), only where it converged
-    held, free = ends[k], crust_free[k]
+    held, free = ends[k], frees[k]
     g = free * slopes_u(held)
     h = curvatures_u(held) * jnp.outer(free, free)
     h = h + jnp.diag(1 - free)

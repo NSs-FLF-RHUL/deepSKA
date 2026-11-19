@@ -11,7 +11,7 @@ are used:
 - uniform: uniform matter in beta equilibrium, its pressure, dP/dn and
   the sound speed; the core of the eos.
 - cell: the crust cell, its energy, four slopes and ten curvatures.
-- crust: the eight starts, who wins, every density, drip and P.
+- crust: the eight starts and the ninth, who wins, every density, drip and P.
 - join: the Maxwell join.
 - table: the one table, and P against the energy density.
 - star: the table into the star and the glitch rise.

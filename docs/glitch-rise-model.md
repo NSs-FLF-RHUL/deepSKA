@@ -55,7 +55,7 @@ There is one file per part, in the order they are used:
   The other three need, everywhere from 0.02 fm^-3 to `n_c`, a positive symmetry energy, a pressure that rises with density, and sound slower than light.
 - `uniform.py`: uniform neutron, proton, electron and muon matter in beta equilibrium, the core of the equation of state.
 - `cell.py`: the crust cell, with its energy, four slopes and ten curvatures written out by hand. The surface and curvature tensions are those of Grams et al 2022.
-- `crust.py`: the cell at each of 600 densities, by `numerics/newton_4x4.py` from eight fixed starts, then neutron drip and the pressure.
+- `crust.py`: the cell at each of 600 densities, by `numerics/newton_4x4.py` from eight fixed starts and a ninth made from their answers, then neutron drip and the pressure.
 - `join.py`: the Maxwell join, where the crust and the core have the same pressure and neutron chemical potential.
 - `table.py`: the equation of state as one table of 1001 rows, and the pressure against the energy density.
 - `star.py`: the table into the star, with the TOV run from the centre, and the glitch rise.
