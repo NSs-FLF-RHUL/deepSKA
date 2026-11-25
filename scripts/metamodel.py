@@ -4,15 +4,19 @@ The metamodel equation of state, from the draw to the glitch rise.
 
 Two things, both at the bottom of this file:
 
-- run(n_draws): draws all 13 inputs n_draws times, drops the draws the checks reject,
-  and builds the eos, the star and the glitch rise of the rest. The only thing to
-  change is the number of draws; about 3% of them are kept.
+- run(n_draws, seed): draws all 13 inputs n_draws times, drops the draws the checks
+  reject, and builds the eos, the star and the glitch rise of the rest. About 3% of
+  the draws are kept. Each seed gives different draws, so many runs can be done at
+  once, each with its own seed.
 - sensitivity(): how the rise answers to each of the 13 inputs, at the inputs as set
   in deepska/glitch/data/metamodel_inputs.py.
 
-The figures are saved to metamodel_out/ in whatever folder you run from.
+The figures, and each run's rises as rises_seed<seed>.npz, are saved to metamodel_out/
+in whatever folder you run from.
 
-The number of draws is set at the bottom, the number of cores at the top.
+The number of draws is set at the bottom, the number of cores at the top. The seed is
+given when running, python scripts/metamodel.py 7, and is 0 if left out. Only a run
+with no seed given also draws the sensitivity.
 """
 
 import os
@@ -41,6 +45,7 @@ from typing import Any
 
 import jax
 import jax.numpy as jnp
+import numpy as np
 from matplotlib.figure import Figure
 
 from deepska.glitch.data.metamodel_inputs import (
@@ -83,21 +88,35 @@ def save(fig: Figure, name: str) -> None:
     log.info("saved %s", path)
 
 
-def run(n_draws: int) -> dict[str, Any]:
+def run(n_draws: int, seed: int) -> dict[str, Any]:
     """
     Draw, run the checks, and build the eos, star and rise of every kept draw.
 
     Prints why draws were rejected and the range of each input among the kept ones,
-    and saves two figures: every kept rise, and the rejected draws by reason.
+    saves the kept draws' inputs and rises to rises_seed<seed>.npz, and saves two
+    figures: every kept rise, and the rejected draws by reason.
 
     :param n_draws: How many draws. About 3% are kept.
+    :param seed: The seed of the random draws, a different one for every run.
     :returns: The run, from run_draws: the kept draws' inputs, rises, radii and masses.
     """
-    result = run_draws(n_draws)
+    result = run_draws(n_draws, seed=seed)
+    # the numbers, one file per seed, so many runs can be put together afterwards
+    out_dir.mkdir(exist_ok=True)
+    np.savez(
+        out_dir / f"rises_seed{seed}.npz",
+        t=result["t"],
+        dnu=result["dnu"],
+        values=result["values"],
+        n_c=result["n_c"],
+        b_core=result["b_core"],
+        b_crust=result["b_crust"],
+    )
     metamodel_output(result)
-    save(rises_figure(result["t"], result["dnu"]), "metamodel_rises")
+    save(rises_figure(result["t"], result["dnu"]), f"metamodel_rises_seed{seed}")
     counts = result["counts"]
-    save(reasons_figure(counts, n_draws, result["n_kept"]), "metamodel_reasons")
+    reasons = reasons_figure(counts, n_draws, result["n_kept"])
+    save(reasons, f"metamodel_reasons_seed{seed}")
     return result
 
 
@@ -119,5 +138,8 @@ def sensitivity() -> None:
 
 
 if __name__ == "__main__":
-    run(5_000)  # change this: the number of draws
-    sensitivity()
+    # change this: or give the seed when running, python scripts/metamodel.py 7
+    seed = int(sys.argv[1]) if len(sys.argv) > 1 else 0
+    run(5_000, seed)  # change this: the number of draws
+    if len(sys.argv) == 1:  # the sensitivity is the same every run, so only once
+        sensitivity()
