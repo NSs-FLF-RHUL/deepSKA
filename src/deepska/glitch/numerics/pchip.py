@@ -47,11 +47,15 @@ def pchip_interior(i: Num, h: Arr, delta: Arr) -> Array:
     """
     w1 = 2.0 * h[i] + h[i - 1]  # weights, wider gap counts for more
     w2 = h[i] + 2.0 * h[i - 1]
+    flat = delta[i - 1] * delta[i] <= 0.0
+    # 1 where flat, so the unused branch never divides by 0 (a nan in the gradient)
+    d_a = jnp.where(flat, 1.0, delta[i - 1])
+    d_b = jnp.where(flat, 1.0, delta[i])
     return jnp.where(
-        delta[i - 1] * delta[i] <= 0.0,
+        flat,
         0.0,
         # knots need to be same sign as whole area slope
-        (w1 + w2) / (w1 / delta[i - 1] + w2 / delta[i]),
+        (w1 + w2) / (w1 / d_a + w2 / d_b),
     )
 
 
@@ -141,14 +145,15 @@ def pchip_interval(x: Arr, q: Num) -> Array:
     """
     Find which interval between knots a point falls in.
 
-    Clipped so a point past the last knot uses the last interval.
+    Clipped so a point past the last knot uses the last interval. Binary search, as
+    the knots are in order: about log2(n) checks instead of all n.
 
-    :param x: Knot positions.
+    :param x: Knot positions, increasing.
     :param q: The point.
     :returns: The i with x[i] <= q < x[i + 1].
     """
     n = x.shape[0]
-    return jnp.clip(jnp.sum(x <= q) - 1, 0, n - 2)
+    return jnp.clip(jnp.searchsorted(x, q, side="right") - 1, 0, n - 2)
 
 
 def pchip_eval(params: tuple[Array, ...], xq: Num) -> Array:

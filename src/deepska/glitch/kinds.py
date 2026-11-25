@@ -21,6 +21,8 @@ Arr: TypeAlias = Array | np.ndarray
 Num: TypeAlias = Arr | float | int
 # any function of arrays: the eos, a drag profile, a right hand side
 Fn: TypeAlias = Callable[..., Array]
+# an array or any nest (tuple, dict) of arrays, what jax calls a pytree
+Tree: TypeAlias = Any
 # the inputs of a run by name, numbers, lists and functions mixed
 Inputs: TypeAlias = dict[str, Any]
 # what per_run keeps from a run
@@ -258,3 +260,38 @@ class Store(NamedTuple):
 
     keep: Fn | None = None
     snapshot_steps: list[int] | None = None
+
+
+class Objective(NamedTuple):
+    """
+    What the 4x4 newton minimises: eps with its slopes and curvatures by hand.
+
+    Attributes:
+        eps: Fn
+            The function to minimise, eps(u) at a (4,) point.
+        slopes: Fn
+            Its four slopes d eps / d u_i at a (4,) point, (4,).
+        curvatures: Fn
+            Its curvatures d2 eps / d u_i d u_j at a (4,) point, (4, 4).
+
+    """
+
+    eps: Fn
+    slopes: Fn
+    curvatures: Fn
+
+
+class Ranges(NamedTuple):
+    """
+    The box the 4x4 newton keeps each unknown inside.
+
+    Attributes:
+        lo: Arr
+            The lower edges, (4,).
+        hi: Arr
+            The upper edges, (4,).
+
+    """
+
+    lo: Arr
+    hi: Arr
