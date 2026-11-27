@@ -41,8 +41,3 @@ k_a, k_c = len(b_flat), len(b_flat) + 2
 # glitch time, and where the pre glitch mean stops, MJD
 t_g, t_0 = 57734.4849906, 57734.4849521
 vela_bin_width = 2.0  # s
-
-# sits next to this file
-vela_path = str(
-    Path(__file__).resolve().parent / "palfreyman2018_vela_glitch_residuals.csv"
-)

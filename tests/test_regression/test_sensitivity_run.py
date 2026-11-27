@@ -31,7 +31,6 @@ from deepska.glitch.data.paper_inputs import (
     rho_d,
     rho_min,
     t_end,
-    vela_path,
 )
 from deepska.glitch.data.paper_vela import paper_vela
 from deepska.glitch.glitch_rise_model.drag.make_b_profile import make_b_profile
@@ -92,7 +91,7 @@ def test_regression_sensitivity_run(
     moving this code somewhere common inside the package (maybe a workflows / analysis
     folder?) so that it's not repeated.
     """
-    vela = paper_vela(vela_path, t_end)
+    vela = paper_vela(t_end)
     t_hist = dt * np.arange(1, n_t + 1)
 
     summary = make_run_summary(t_hist, vela, dt, keep_dnu=True)
