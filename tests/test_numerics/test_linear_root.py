@@ -12,15 +12,11 @@ from deepska.glitch.numerics.linear_root import linear_root
         pytest.param(jnp.array([0, 0]), jnp.array([1, 1]), 0.5, 0.5, id="y=x @ 0.5"),
         pytest.param(jnp.array([-1, -1]), jnp.array([1, 1]), 0, 0, id="root at 0"),
         pytest.param(
-<<<<<<< HEAD
-            jnp.array([5, 4]), jnp.array([-3, 5]), 4.125, 4, id="points either side of 0"
-=======
             jnp.array([5, 4]),
             jnp.array([-3, 5]),
             4.125,
             4,
             id="negative big change",
->>>>>>> 3e74d7d (fixing linting)
         ),
     ],
 )
