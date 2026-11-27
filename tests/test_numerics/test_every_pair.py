@@ -35,7 +35,13 @@ def run_return_tuple() -> Callable:
             jnp.array([1, 2, 3]),
             jnp.array([4, 5, 6]),
             [1, 0],
-            jnp.array([[4, 8, 12], [5, 10, 15], [6, 12, 18]]),
+            jnp.array(
+                [
+                    [4, 8, 12],
+                    [5, 10, 15],
+                    [6, 12, 18],
+                ]
+            ),
             id="Basic integer test",
         ),
         pytest.param(
