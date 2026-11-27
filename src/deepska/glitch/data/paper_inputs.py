@@ -1,8 +1,6 @@
 # Copyright (C) 2026 Isaac Dodds, Royal Holloway University of London
 """Inputs for the paper run, Graber et al 2018 on the Vela 2016 glitch, all cgs."""
 
-from pathlib import Path
-
 import jax.numpy as jnp
 
 from deepska.glitch.data.constants import m_u, msun

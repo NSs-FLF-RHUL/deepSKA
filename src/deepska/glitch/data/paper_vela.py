@@ -1,15 +1,16 @@
 # Copyright (C) 2026 Isaac Dodds, Royal Holloway University of London
 """The Vela data as the paper figures use it."""
 
-from deepska.glitch.data.paper_inputs import t_0, t_g, vela_bin_width
-
-from deepska.glitch.kinds import Vela, Arr
-import numpy as np
-from deepska.glitch.numerics.bin_series import bin_series
-from deepska.glitch.data.constants import day, ms, ns
-import requests
-from pathlib import Path
 import io
+from pathlib import Path
+
+import numpy as np
+import requests
+
+from deepska.glitch.data.constants import day, ms, ns
+from deepska.glitch.data.paper_inputs import t_0, t_g, vela_bin_width
+from deepska.glitch.kinds import Arr, Vela
+from deepska.glitch.numerics.bin_series import bin_series
 
 
 def vela_up_to(
@@ -26,6 +27,7 @@ def vela_up_to(
     """
     keep = t_bins <= t_max
     return t_bins[keep], vela_bin[keep], cum_data[keep]
+
 
 def vela_from_glitch(
     centre: Arr, vela_bin: Arr
@@ -50,7 +52,7 @@ def vela_from_glitch(
 
 
 def vela_data(
-    path: str, t_g: float, t_0: float, width: float
+    path: str | Path | io.StringIO, t_g: float, t_0: float, width: float
 ) -> tuple[np.ndarray, ...]:
     """
     Read the Vela timing residuals and bin them.
@@ -79,7 +81,7 @@ def vela_data(
     return t_bins, vela_from0, dt_shift, cum_data, centre, vela_bin, sec, res
 
 
-def paper_vela(t_max: float, path: str | Path | None = None) -> Vela:
+def paper_vela(t_max: float, path: str | Path | io.StringIO | None = None) -> Vela:
     """
     Load the Vela data with the glitch time and bin width of the paper.
 
@@ -87,9 +89,12 @@ def paper_vela(t_max: float, path: str | Path | None = None) -> Vela:
     :param t_max: Time after the glitch in s that the binned arrays are cut at.
     :returns: The Vela arrays the figures need.
     """
-
     if path is None:
-        source_req = requests.get("https://github.com/NSs-FLF-RHUL/deepSKA/releases/download/glitchsim-regression-outputs/palfreyman2018_vela_glitch_residuals.csv")
+        source_req = requests.get(
+            "https://github.com/NSs-FLF-RHUL/deepSKA/releases/download/glitchsim-regression-outputs/palfreyman2018_vela_glitch_residuals.csv",
+            timeout=60,
+        )
+
         path = io.StringIO(source_req.text)
 
     t_bins, vela_bin, dt_shift, cum_data, t_all, vela_all, t_raw, res_raw = vela_data(
