@@ -70,6 +70,7 @@ lint.per-file-ignores = { "tests*" = [
   "D103",   # Docstring in function
   "D401",   # 1st line should be imperative
   "INP001", # File is part of an implicit namespace package.
+  "PLR0913", # get over too many func arg
   "PT028",  # Constant value in test function input.
   "S101",   # Use of `assert` detected
 ] }
