@@ -43,3 +43,24 @@ def test_flat_grid_4_by_3() -> None:
     assert set(expect_draws.keys()) == set(draws.keys())
     for key, expect_array in expect_draws.items():
         assert jnp.all(expect_array == draws[key])
+
+
+def test_flat_grid_trivial_array() -> None:
+    input = {
+        "a": jnp.array([0]),
+        "b": jnp.array([4, 5, 6, 7]),
+    }
+    draws, shape = flat_grid(input)
+    expect_shape = (1, 4)
+    expect_draws = {
+        "a": jnp.array([0] * 4),
+        "b": jnp.array([4, 5, 6, 7]),
+    }
+
+    assert expect_shape == shape
+    # JAX doesn't implement == on arrays and return a
+    # scalar, which is what dictionary comparison wants to
+    # do.
+    assert set(expect_draws.keys()) == set(draws.keys())
+    for key, expect_array in expect_draws.items():
+        assert jnp.all(expect_array == draws[key])
