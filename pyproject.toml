@@ -65,7 +65,9 @@ lint.ignore = [
   "ISC001", # simplify implicit str concatenation (ruff-format recommended)
 ]
 lint.per-file-ignores = { "tests*" = [
+  "A001",
   "D100",   # Missing docstring in public module
+  "D103",   # Docstring in function
   "D401",   # 1st line should be imperative
   "INP001", # File is part of an implicit namespace package.
   "PT028",  # Constant value in test function input.
