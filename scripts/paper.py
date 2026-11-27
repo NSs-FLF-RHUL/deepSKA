@@ -38,7 +38,6 @@ from deepska.glitch.data.paper_inputs import (
     rho_d,
     rho_min,
     t_end,
-    vela_path,
 )
 from deepska.glitch.data.paper_vela import paper_vela
 from deepska.glitch.glitch_rise_model.drag.b_cases import b_cases
@@ -95,7 +94,7 @@ def paper() -> None:
         rho_b_data=rho_b_data,
         bcore_range=bcore_range,
     )
-    paper_output(arrays, spin, paper_vela(vela_path, t_end))
+    paper_output(arrays, spin, paper_vela(t_end))
 
 
 if __name__ == "__main__":
