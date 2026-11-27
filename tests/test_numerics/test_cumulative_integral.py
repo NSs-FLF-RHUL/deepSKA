@@ -19,6 +19,14 @@ def test_cumulative_integral_constant_y() -> None:
     assert jnp.allclose(output, expected_output)
 
 
+def test_cumulative_integral_constant_dt() -> None:
+    y = jnp.array([1, 2, 3])
+    dt = jnp.array(3 * [0.1])
+    expected_output = jnp.array([0.1, 0.3, 0.6])
+    output = cumulative_integral(y, dt)
+    assert jnp.allclose(output, expected_output)
+
+
 def test_cumulative_integral_linear_y() -> None:
     y = jnp.array([1, 2, 3])
     dt = 0.1
