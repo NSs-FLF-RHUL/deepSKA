@@ -52,7 +52,8 @@ def run_return_tuple() -> Callable:
             jnp.array([4, 5, 6]),
             [2, 1],
             jnp.array([[7, 15, 23], [9, 19, 29], [11, 23, 35]]),
-            id="Arguments passed correctly",),
+            id="Arguments passed correctly",
+        ),
     ],
 )
 def test_numerical_vals(
@@ -70,7 +71,7 @@ def test_numerical_vals(
             jnp.array([3, 4]),
             [1, 0],
             jnp.array([[[1, 0], [2, 0]], [[1, 0], [2, 0]]]),
-            id="Output broadcast along new axis"
+            id="Output broadcast along new axis",
         ),
     ],
 )
