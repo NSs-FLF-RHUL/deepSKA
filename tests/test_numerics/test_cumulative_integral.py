@@ -23,13 +23,13 @@ from deepska.glitch.numerics.cumulative_integral import cumulative_integral
             jnp.array([3 * [1], [1, 2, 3]]),
             0.1,
             jnp.array([[0.1, 0.2, 0.3], [0.1, 0.3, 0.6]]),
-            id="2d_y",
+            id="2d_y, check applied row-wise",
         ),
         pytest.param(
             0.1,
             jnp.array([3 * [1], [1, 2, 3]]),
             jnp.array([[0.1, 0.2, 0.3], [0.1, 0.3, 0.6]]),
-            id="2d_dt",
+            id="2d_dt, applied row-wise",
         ),
         pytest.param(
             jnp.array([0.2, 1.4, 3.9]),
@@ -41,7 +41,7 @@ from deepska.glitch.numerics.cumulative_integral import cumulative_integral
             jnp.array([1, 2, 3]),
             jnp.array([0.1, 1.0, 10.0]),
             jnp.array([0.1, 2.1, 32.1]),
-            id="1ds",
+            id="1ds, element-wise multiplication into cumsum",
         ),
     ],
 )
