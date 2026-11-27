@@ -42,6 +42,12 @@ from deepska.glitch.numerics.cumulative_integral import cumulative_integral
             id="2d_y"
         ),
         pytest.param(
+            0.1,
+            jnp.array([3 * [1], [1, 2, 3]]),
+            jnp.array([[0.1, 0.2, 0.3], [0.1, 0.3, 0.6]]),
+            id="2d_dt"
+        ),
+        pytest.param(
             jnp.array([0.2, 1.4, 3.9]),
             0.1,
             jnp.array([0.02, 0.16, 0.55]),
