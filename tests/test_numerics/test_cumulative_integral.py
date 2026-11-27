@@ -1,75 +1,66 @@
 import jax.numpy as jnp
 
+import pytest
+
 from deepska.glitch.numerics.cumulative_integral import cumulative_integral
 
 
-def test_cumulative_integral_floats() -> None:
-    y = 2.5
-    dt = 0.1
-    expected_output = jnp.array(0.25)
-    output = cumulative_integral(y, dt)
-    assert jnp.allclose(output, expected_output)
-
-
-def test_cumulative_integral_constant_y() -> None:
-    y = jnp.array(3 * [1])
-    dt = 0.1
-    expected_output = jnp.array([0.1, 0.2, 0.3])
-    output = cumulative_integral(y, dt)
-    assert jnp.allclose(output, expected_output)
-
-
-def test_cumulative_integral_constant_dt() -> None:
-    y = jnp.array([1, 2, 3])
-    dt = jnp.array(3 * [0.1])
-    expected_output = jnp.array([0.1, 0.3, 0.6])
-    output = cumulative_integral(y, dt)
-    assert jnp.allclose(output, expected_output)
-
-
-def test_cumulative_integral_linear_y() -> None:
-    y = jnp.array([1, 2, 3])
-    dt = 0.1
-    expected_output = jnp.array([0.1, 0.3, 0.6])
-    output = cumulative_integral(y, dt)
-    assert jnp.allclose(output, expected_output)
-
-
-def test_cumulative_integral_zero_dt() -> None:
-    y = jnp.array([3.5, 3.9, 4.1])
-    dt = 0.
-    expected_output = jnp.array([0., 0., 0.])
-    output = cumulative_integral(y, dt)
-    assert jnp.allclose(output, expected_output)
-
-
-def test_cumulative_integral_zero_y() -> None:
-    y = jnp.array([0.])
-    dt = 0.5
-    expected_output = jnp.array([0.])
-    output = cumulative_integral(y, dt)
-    assert jnp.allclose(output, expected_output)
-
-
-def test_cumulative_integral_2d_y() -> None:
-    y = jnp.array([3 * [1], [1, 2, 3]])
-    dt = 0.1
-    expected_output = jnp.array([[0.1, 0.2, 0.3], [0.1, 0.3, 0.6]])
-    output = cumulative_integral(y, dt)
-    assert jnp.allclose(output, expected_output)
-
-
-def test_cumulative_integral_random_y() -> None:
-    y = jnp.array([0.2, 1.4, 3.9])
-    dt = 0.1
-    expected_output = jnp.array([0.02, 0.16, 0.55])
-    output = cumulative_integral(y, dt)
-    assert jnp.allclose(output, expected_output)
-
-
-def test_cumulative_integral_1ds() -> None:
-    y = jnp.array([1, 2, 3])
-    dt = jnp.array([0.1, 1., 10.])
-    expected_output = jnp.array([0.1, 2.1, 32.1])
+@pytest.mark.parametrize(
+    ("y", "dt", "expected_output"),
+    [
+        pytest.param(
+            2.5, 0.1, jnp.array(0.25), id="floats"
+        ),
+        pytest.param(
+            jnp.array(3 * [1]),
+            0.1,
+            jnp.array([0.1, 0.2, 0.3]),
+            id="constant_y"
+        ),
+        pytest.param(
+            jnp.array([1, 2, 3]),
+            jnp.array(3 * [0.1]),
+            jnp.array([0.1, 0.3, 0.6]),
+            id="constant_dt"
+        ),
+        pytest.param(
+            jnp.array([1, 2, 3]),
+            0.1,
+            jnp.array([0.1, 0.3, 0.6]),
+            id="linear_y"
+        ),
+        pytest.param(
+            jnp.array([3.5, 3.9, 4.1]),
+            0.,
+            jnp.array([0., 0., 0.]),
+            id="zero_dt"
+        ),
+        pytest.param(
+            jnp.array([0.]),
+            0.5,
+            jnp.array([0.]),
+            id="zero_y"
+        ),
+        pytest.param(
+            jnp.array([3 * [1], [1, 2, 3]]),
+            0.1,
+            jnp.array([[0.1, 0.2, 0.3], [0.1, 0.3, 0.6]]),
+            id="2d_y"
+        ),
+        pytest.param(
+            jnp.array([0.2, 1.4, 3.9]),
+            0.1,
+            jnp.array([0.02, 0.16, 0.55]),
+            id="random_y"
+        ),
+        pytest.param(
+            jnp.array([1, 2, 3]),
+            jnp.array([0.1, 1., 10.]),
+            jnp.array([0.1, 2.1, 32.1]),
+            id="1ds"
+        )
+    ]
+)
+def test_cumulative_integral_all(y, dt, expected_output) -> None:
     output = cumulative_integral(y, dt)
     assert jnp.allclose(output, expected_output)
