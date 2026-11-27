@@ -41,3 +41,11 @@ def test_cumulative_integral_2d() -> None:
     expected_output = jnp.array([[0.1, 0.2, 0.3], [0.1, 0.3, 0.6]])
     output = cumulative_integral(y, dt)
     assert jnp.allclose(output, expected_output)
+
+
+def test_cumulative_integral_random() -> None:
+    y = jnp.array([0.2, 1.4, 3.9])
+    dt = 0.1
+    expected_output = jnp.array([0.02, 0.16, 0.55])
+    output = cumulative_integral(y, dt)
+    assert jnp.allclose(output, expected_output)
