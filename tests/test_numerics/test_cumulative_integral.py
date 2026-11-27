@@ -59,7 +59,7 @@ def test_cumulative_integral_random_y() -> None:
     assert jnp.allclose(output, expected_output)
 
 
-def test_cumulative_integral_1d_dt() -> None:
+def test_cumulative_integral_1ds() -> None:
     y = jnp.array([1, 2, 3])
     dt = jnp.array([0.1, 1., 10.])
     expected_output = jnp.array([0.1, 2.1, 32.1])
