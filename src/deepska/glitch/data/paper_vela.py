@@ -9,6 +9,8 @@ from deepska.glitch.numerics.bin_series import bin_series
 from deepska.glitch.data.constants import day, ms, ns
 import requests
 from pathlib import Path
+import io
+
 
 def vela_up_to(
     t_bins: Arr, vela_bin: Arr, cum_data: Arr, t_max: float
@@ -77,7 +79,7 @@ def vela_data(
     return t_bins, vela_from0, dt_shift, cum_data, centre, vela_bin, sec, res
 
 
-def paper_vela(path: str, t_max: float) -> Vela:
+def paper_vela(t_max: float, path: str | Path | None = None) -> Vela:
     """
     Load the Vela data with the glitch time and bin width of the paper.
 
@@ -85,6 +87,11 @@ def paper_vela(path: str, t_max: float) -> Vela:
     :param t_max: Time after the glitch in s that the binned arrays are cut at.
     :returns: The Vela arrays the figures need.
     """
+
+    if path is None:
+        source_req = requests.get("https://github.com/NSs-FLF-RHUL/deepSKA/releases/download/glitchsim-regression-outputs/palfreyman2018_vela_glitch_residuals.csv")
+        path = io.StringIO(source_req.text)
+
     t_bins, vela_bin, dt_shift, cum_data, t_all, vela_all, t_raw, res_raw = vela_data(
         path, t_g, t_0, vela_bin_width
     )
