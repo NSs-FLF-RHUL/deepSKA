@@ -71,11 +71,9 @@ class PaperInputs:
     @classmethod
     def vela_2016_default(cls) -> "PaperInputs":
         """Create an instance of the class with attributes set to the paper values."""
-        vals = PaperInputs()
-        vals.__post__init__()
-        return vals
+        return PaperInputs()
 
-    def __post__init__(self) -> None:
+    def __post_init__(self) -> None:
         """Post initialization."""
         self.dt = self.t_end / self.n_t
         self.b_cores = self.bcore_range[jnp.array([3, -1])]
