@@ -18,7 +18,10 @@ def paper_vela(path: str, t_max: float) -> Vela:
     vela_2016_default = PaperInputs.vela_2016_default()
 
     t_bins, vela_bin, dt_shift, cum_data, t_all, vela_all, t_raw, res_raw = vela_data(
-        path, vela_2016_default.t_g, vela_2016_default.t_0, vela_2016_default.vela_bin_width
+        path,
+        vela_2016_default.t_g,
+        vela_2016_default.t_0,
+        vela_2016_default.vela_bin_width,
     )
     t_bins, vela_bin, cum_data = vela_up_to(t_bins, vela_bin, cum_data, t_max)
     return Vela(t_bins, vela_bin, dt_shift, cum_data, t_all, vela_all, t_raw, res_raw)
