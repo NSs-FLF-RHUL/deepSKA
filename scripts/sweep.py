@@ -32,27 +32,13 @@ from deepska.glitch.analysis.drawn_runs import drawn_runs
 from deepska.glitch.analysis.make_run_residual import make_run_residual
 from deepska.glitch.analysis.make_run_summary import make_run_summary
 from deepska.glitch.analysis.sweep import run_sweep, save_sweep
-from deepska.glitch.data.paper_inputs import (
-    PROFILE_STEPS,
-    dom_crit,
-    dr,
-    dt,
-    m0,
-    n_shells,
-    n_t,
-    n_tov,
-    omega0,
-    r0,
-    rho_cc,
-    rho_d,
-    rho_min,
-    t_end,
-    vela_path,
-)
+from deepska.glitch.data.paper_inputs import PaperInputs, vela_path
 from deepska.glitch.data.paper_vela import paper_vela
 from deepska.glitch.glitch_rise_model.drag.make_b_profile import make_b_profile
 from deepska.glitch.glitch_rise_model.eos.negele_vautherin_electron_crust import p_crust
 from deepska.glitch.plots.sweep_output import sweep_output
+
+vela_2016_default = PaperInputs.vela_2016_default()
 
 # plain lines on screen, same as print would give
 logging.basicConfig(stream=sys.stdout, level=logging.INFO, format="%(message)s")
@@ -86,20 +72,20 @@ batch = 125
 INPUTS = {
     "eos": p_crust,
     "b_profile": b_profiles,
-    "rho_d": rho_d,
-    "rho_cc": rho_cc,
-    "rho_min": rho_min,
-    "m0": m0,
-    "r0": r0,
+    "rho_d": vela_2016_default.rho_d,
+    "rho_cc": vela_2016_default.rho_cc,
+    "rho_min": vela_2016_default.rho_min,
+    "m0": vela_2016_default.m0,
+    "r0": vela_2016_default.r0,
     "b_core": 5e-5,
-    "omega0": omega0,
-    "dom_crit": dom_crit,
-    "dr": dr,
-    "n_tov": n_tov,
-    "n_shells": n_shells,
-    "dt": dt,
-    "n_t": n_t,
-    "profile_steps": PROFILE_STEPS,
+    "omega0": vela_2016_default.omega0,
+    "dom_crit": vela_2016_default.dom_crit,
+    "dr": vela_2016_default.dr,
+    "n_tov": vela_2016_default.n_tov,
+    "n_shells": vela_2016_default.n_shells,
+    "dt": vela_2016_default.dt,
+    "n_t": vela_2016_default.n_t,
+    "profile_steps": vela_2016_default.PROFILE_STEPS,
 }
 folder = "sweeps"  # made in the folder you run from
 
@@ -114,11 +100,13 @@ def sweep() -> tuple[Grid, Grid]:
     :returns values: The swept values.
     """
     t_start = time.time()
-    vela = paper_vela(vela_path, t_end)
-    t_hist = dt * np.arange(1, n_t + 1)  # time of every step
+    vela = paper_vela(vela_path, vela_2016_default.t_end)
+    t_hist = vela_2016_default.dt * np.arange(
+        1, vela_2016_default.n_t + 1
+    )  # time of every step
     batching = Batching(batch, cores)
 
-    summary = make_run_summary(t_hist, vela, dt, keep_dnu=keep_dnu)
+    summary = make_run_summary(t_hist, vela, vela_2016_default.dt, keep_dnu=keep_dnu)
     out, values, draws = run_sweep(INPUTS, sweep_over, summary, batching, matrix=matrix)
     best, where = closest_run(out["rms"], values, matrix=matrix)
     log.info(
@@ -140,7 +128,7 @@ def sweep() -> tuple[Grid, Grid]:
 
     shown = drawn_runs(draws, out["rms"].size, drawn)
     # the drawn runs again, keeping the whole residual
-    residual = make_run_residual(dt, vela.dt_shift)
+    residual = make_run_residual(vela_2016_default.dt, vela.dt_shift)
     curves_out, _, _ = run_sweep(INPUTS, shown, residual, batching, matrix=False)
     sweep_output(values, Drawn(shown, curves_out["res"]), out["rms"].size, t_hist, vela)
     log.info("whole script, with the figures: %.1f s", time.time() - t_start)
