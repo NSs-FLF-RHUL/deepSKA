@@ -14,7 +14,7 @@ import numpy as np
 from deepska.glitch.analysis.cumulative_residual import cumulative_residual
 from deepska.glitch.analysis.phase_of_rise import phase_of_rise
 from deepska.glitch.analysis.timing_residual import timing_residual
-from deepska.glitch.data.paper_inputs import k_a, k_c, steps_a, steps_c
+from deepska.glitch.data.paper_inputs import PaperInputs
 from deepska.glitch.data.paper_labels import domains
 from deepska.glitch.kinds import Axes, PaperArrays, Spin, Vela
 from deepska.glitch.plots.curves import curves_cases, curves_profile, curves_seven
@@ -33,6 +33,7 @@ def paper_output(arrays: PaperArrays, spin: Spin, vela: Vela) -> None:
     :param spin: The spin settings the runs used.
     :param vela: The Vela data.
     """
+    vela_2016_default = PaperInputs.vela_2016_default()
     a = arrays
     b_label = "mutual friction coefficient B"
     profile_labels = (r"$r$ (km)", r"$\Omega_{sf}$ (rad/s)")
@@ -105,8 +106,18 @@ def paper_output(arrays: PaperArrays, spin: Spin, vela: Vela) -> None:
             ylog=True,
         ),
     )
-    profile(weak, k_a, steps_a, "3. superfluid profile, case A, weak core")
-    profile(weak, k_c, steps_c, "4. superfluid profile, case C, weak core")
+    profile(
+        weak,
+        vela_2016_default.k_a,
+        vela_2016_default.steps_a,
+        "3. superfluid profile, case A, weak core",
+    )
+    profile(
+        weak,
+        vela_2016_default.k_c,
+        vela_2016_default.steps_c,
+        "4. superfluid profile, case C, weak core",
+    )
     figure(
         curves_seven(t_hist, a.dnu_all[weak]),
         Axes(
@@ -122,8 +133,18 @@ def paper_output(arrays: PaperArrays, spin: Spin, vela: Vela) -> None:
         curves_seven(t_hist, phi_all[weak]),
         Axes((-1, 60), (-0.0001, 0.0036), "t (s)", "phase", "6. phase, weak core"),
     )
-    profile(strong, k_a, steps_a, "7. superfluid profile, case A, strong core")
-    profile(strong, k_c, steps_c, "8. superfluid profile, case C, strong core")
+    profile(
+        strong,
+        vela_2016_default.k_a,
+        vela_2016_default.steps_a,
+        "7. superfluid profile, case A, strong core",
+    )
+    profile(
+        strong,
+        vela_2016_default.k_c,
+        vela_2016_default.steps_c,
+        "8. superfluid profile, case C, strong core",
+    )
     figure(
         curves_seven(t_hist, a.dnu_all[strong]),
         Axes(
