@@ -17,25 +17,7 @@ from jax import Array
 
 from deepska.glitch.data.b_data import rho_b_data
 from deepska.glitch.data.constants import km
-from deepska.glitch.data.paper_inputs import (
-    PROFILE_STEPS,
-    b_cores,
-    bcore_range,
-    dom_crit,
-    dr,
-    dt,
-    k_a,
-    m0,
-    n_shells,
-    n_t,
-    n_tov,
-    omega0,
-    r0,
-    rho_b,
-    rho_cc,
-    rho_d,
-    rho_min,
-)
+from deepska.glitch.data.paper_inputs import PaperInputs
 from deepska.glitch.glitch_rise_model.drag.b_cases import b_cases
 from deepska.glitch.glitch_rise_model.drag.p_b import b_all, delta_v_all, f_all, p_b
 from deepska.glitch.glitch_rise_model.eos.negele_vautherin_electron_crust import p_crust
@@ -62,19 +44,42 @@ def test_regression_gca2018(
     moving this code somewhere common inside the package (maybe a workflows / analysis
     folder?) so that it's not repeated.
     """
+    vela_2016_default = PaperInputs.vela_2016_default()
+
     star_inputs = StarInputs(
-        p_crust, rho_d, rho_cc, rho_min, m0, r0, dom_crit, dr, n_tov, n_shells
+        p_crust,
+        vela_2016_default.rho_d,
+        vela_2016_default.rho_cc,
+        vela_2016_default.rho_min,
+        vela_2016_default.m0,
+        vela_2016_default.r0,
+        vela_2016_default.dom_crit,
+        vela_2016_default.dr,
+        vela_2016_default.n_tov,
+        vela_2016_default.n_shells,
     )
-    spin = Spin(omega0, dom_crit, dt, n_t, PROFILE_STEPS)
+    spin = Spin(
+        vela_2016_default.omega0,
+        vela_2016_default.dom_crit,
+        vela_2016_default.dt,
+        vela_2016_default.n_t,
+        vela_2016_default.PROFILE_STEPS,
+    )
     star = param_to_star(star_inputs)  # one star for every run
     b_profiles = paper_b_profiles()
 
     # every profile at weak and strong core
     dnu_all, profiles = profile_grid(
-        jnp.arange(len(b_profiles)), b_cores, b_profiles, star, spin
+        jnp.arange(len(b_profiles)), vela_2016_default.b_cores, b_profiles, star, spin
     )
     # case A over the 7 core couplings, for fig 13
-    dnu_sweep, _ = profile_grid(jnp.array([k_a]), bcore_range, b_profiles, star, spin)
+    dnu_sweep, _ = profile_grid(
+        jnp.array([vela_2016_default.k_a]),
+        vela_2016_default.bcore_range,
+        b_profiles,
+        star,
+        spin,
+    )
 
     # fraction of the stars mass outside each density
     def mass_fraction(rho: Arr) -> Array:
@@ -85,16 +90,16 @@ def test_regression_gca2018(
         b_all=b_all,
         delta_v_all=delta_v_all,
         f_all=f_all,
-        rho_b=rho_b,
-        b_curves=b_cases(p_b, rho_b),
-        dm_m=mass_fraction(rho_b),
+        rho_b=vela_2016_default.rho_b,
+        b_curves=b_cases(p_b, vela_2016_default.rho_b),
+        dm_m=mass_fraction(vela_2016_default.rho_b),
         dm_m_dots=mass_fraction(rho_b_data),
         r_km=star.x * star.r_drip / km,
         profiles=profiles,
         dnu_all=dnu_all,
         dnu_sweep=dnu_sweep[:, 0],
         rho_b_data=rho_b_data,
-        bcore_range=bcore_range,
+        bcore_range=vela_2016_default.bcore_range,
     )
     reference = PaperArrays.load(regression_data / arrays_ref)
 
